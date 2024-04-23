@@ -52,7 +52,7 @@ char* GetwildcardText(unsigned int i, bool canon);
 void SetWildCard(char* value,char* canonicalVale,const char* index,unsigned int position);
 void SetWildCardGiven(unsigned int start, unsigned int end, bool inpattern, int index,MARKDATA* hitdata = NULL);
 void SetWildCardIndexStart(int);
-int GetWildcardID(char* x);
+int GetWildcardID(char const* x);
 void SetAPIVariable(WORDP D, char const* value);
 void ReadVariables(const char* name);
 void InitBotVariables(int argc, char** argv);
@@ -81,7 +81,7 @@ char* GetUserVariable(const char* word, bool nojson = false);
 void SetUserVariable(const char* var, char const* word, bool assignment = false,bool reuse = false);
 FunctionResult Add2UserVariable(char* var, char* word,char* op,char* originalArg);
 
-char* PerformAssignment(char* word,char* ptr,char* buffer,FunctionResult& result,bool nojson = false);
+char* PerformAssignment(char* word,char const* ptr,char* buffer,FunctionResult& result,bool nojson = false);
 
 
 #endif

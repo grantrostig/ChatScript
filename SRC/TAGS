@@ -25758,7 +25758,7 @@ FunctionResult JSONFormatCode(char* buffer)JSONFormatCode2103,64794
 MEANING jsonValue(char* value, unsigned int& flags, bool stripQuotes)jsonValue2228,68518
 static void  DoJSONAssign(WORDP base,bool changedBase,WORDP leftside, WORDP keyname, char* valueDoJSONAssign2269,69792
 FunctionResult JSONObjectInsertCode(char* buffer) //  objectname objectkey objectvalue  JSONObjectInsertCode2383,74398
-FunctionResult JSONVariableAssign(char* word, char* value, bool stripQuotes)JSONVariableAssign2416,75439
+FunctionResult JSONVariableAssign(char* word, char const* value, bool stripQuotes)JSONVariableAssign2416,75439
 FunctionResult JSONArraySizeCode(char* buffer) // like ^length()JSONArraySizeCode2627,83291
 FunctionResult JSONArrayDeleteCode(char* buffer) //  array, index	JSONArrayDeleteCode2632,83406
 FunctionResult DoJSONArrayInsert(bool nodup, WORDP array, MEANING value, int flags, char* bufferDoJSONArrayInsert2695,85185

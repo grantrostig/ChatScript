@@ -3,7 +3,7 @@
 int impliedIf = ALREADY_HANDLED;	// testing context of an if
 unsigned int withinLoop = 0;
 
-static void TestIf(char* ptr, FunctionResult& result, char* buffer)
+static void TestIf(char const* ptr, FunctionResult& result, char* buffer)
 { //   word is a stream terminated by )
 	//   if (%rand == 5 ) example of a comparison
 	// if (@14) {} nonempty factset
@@ -65,7 +65,7 @@ resume:
 		char word1val[MAX_WORD_SIZE];
 		char word2val[MAX_WORD_SIZE];
 		ptr = ReadCompiledWord(ptr, buffer);
-		realCode = ptr;
+		realCode = const_cast<char*>(ptr);
 		result = HandleRelation(word1, op, buffer, true, id, word1val, word2val);
 		realCode = 0;
 		ptr = ReadCompiledWord(ptr, op);	//   AND, OR, or ) 
@@ -166,7 +166,7 @@ resume:
 	impliedIf = ALREADY_HANDLED;
 }
 
-char* HandleIf(char* ptr, char* buffer, FunctionResult& result)
+char* HandleIf(char const* ptr, char* buffer, FunctionResult& result)
 {
 	// If looks like this: ^^if ( _0 == null ) 00m{ this is it } 00G else ( 1 ) 00q { this is not it } 004 
 	// a nested if would be ^^if ( _0 == null ) 00m{ ^^if ( _0 == null ) 00m{ this is it } 00G else ( 1 ) 00q { this is not it } 004 } 00G else ( 1 ) 00q { this is not it } 004
@@ -175,12 +175,12 @@ char* HandleIf(char* ptr, char* buffer, FunctionResult& result)
 	bool executed = false;
 	*buffer = 0;
 	CALLFRAME* frame = ChangeDepth(1, "If()", false);
-	frame->code = ptr;
+	frame->code = const_cast<char*>(ptr);
 	--adjustIndent; // stay showing at prior level
 
 	while (ALWAYS) //   do test conditions until match
 	{
-		char* endptr;
+		char const* endptr;
 
 		if (*ptr == '(') // old format - std if internals
 		{
@@ -277,10 +277,10 @@ char* HandleIf(char* ptr, char* buffer, FunctionResult& result)
 	ChangeDepth(-1, "If()", true);
 	++adjustIndent; // return to if level
 
-	return ptr;
+	return const_cast<char*>(ptr);
 }
 
-char* HandleLoop(char* ptr, char* buffer, FunctionResult& result, bool json)
+char* HandleLoop(char const* ptr, char* buffer, FunctionResult& result, bool json)
 {
 	unsigned int oldIterator = currentIterator;
 	currentIterator = 0;
@@ -292,8 +292,8 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult& result, bool json)
 	int match2 = -1;
 	FACT* F = NULL;
 	result = NOPROBLEM_BIT;
-	char* paren = strchr(ptr, ')') + 2;
-	char* endofloop = paren + (size_t)Decode(paren);
+	char const* paren = strchr(ptr, ')') + 2;
+	char* endofloop = const_cast<char*>(paren) + (size_t)Decode(paren);
 
 	int limit = 0;
 
@@ -403,7 +403,7 @@ char* HandleLoop(char* ptr, char* buffer, FunctionResult& result, bool json)
 		{
 			result = FAILRULE_BIT; // illegal id
 			ChangeDepth(-1, "Loop()", true);
-			return ptr;
+			return const_cast<char*>(ptr);
 		}
 		counter = FACTSET_COUNT(set);
 	}

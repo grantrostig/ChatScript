@@ -180,7 +180,7 @@ bool AreTimingMarksSet();
 // encoding
 void DummyEncode(char* &data);
 void Encode(unsigned int val,char* &ptr,int size = false);
-unsigned int Decode(char* data,int single = 0);
+unsigned int Decode(char const* data,int single = 0);
 char* FullEncode(uint64 val,char* ptr);
 uint64 FullDecode(char* data);
 

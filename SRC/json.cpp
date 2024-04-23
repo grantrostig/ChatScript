@@ -3021,7 +3021,7 @@ FunctionResult JSONObjectInsertCode(char* buffer) //  objectname objectkey objec
 	return NOPROBLEM_BIT;
 }
 
-FunctionResult JSONVariableAssign(char* word, char* value, bool stripQuotes)
+FunctionResult JSONVariableAssign(char* word, char const* value, bool stripQuotes)
 {
 	if (*word != USERVAR_PREFIX) return FAILRULE_BIT; // must be user variable reference at start
 	char basicname[MAX_WORD_SIZE] = "";

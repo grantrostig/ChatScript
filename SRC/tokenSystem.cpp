@@ -29,7 +29,7 @@ void ResetTokenSystem()
 	tokenFlags = 0;
     wordCount = 0;
 	memset(wordStarts,0,sizeof(char*)*MAX_SENTENCE_LENGTH); // reinit for new volley - sharing of word space can occur throughout this volley
-	wordStarts[0] = ""; // underflow protection
+	wordStarts[0] = const_cast<char*>(""); // underflow protection
 	ClearWhereInSentence();
 	memset(concepts, 0, sizeof(concepts));  // concept chains per word
 	memset(topics, 0, sizeof(concepts));  // concept chains per word
@@ -304,7 +304,7 @@ char* GetBurstWord(unsigned int n) //   0-based
 	if (n >= burstLimit) 
 	{
 		ReportBug((char*)"Bad burst n %d",n);
-		return "";
+		return const_cast<char*>("");
 	}
 	return burstWords[n];
 }
@@ -1506,7 +1506,7 @@ FunctionResult GetDerivationText(int start, int end, char* buffer)
 
 char* find_closest_jp_period(char* input)
 {
-    char* periods[] = { "。", "．" }; // jp period, jp half-period,
+    char const* periods[] = { "。", "．" }; // jp period, jp half-period,
     char* result = NULL;
     for (int i=0; i < 2; ++i) {
         char* period_loc = strstr(input, periods[i]);
@@ -1565,9 +1565,9 @@ char* TokenizeJapanese(char* input, unsigned int& count, char** words, char* sep
 	if (end)
 	{
 		char* punc = NULL;
-		if (end == period) punc = ".";
-		else if (end == question) punc = "?";
-		else punc = "!";
+		if (end == period) punc = const_cast<char*>(".");
+		else if (end == question) punc = const_cast<char*>("?");
+		else punc = const_cast<char*>("!");
 		words[++count] = AllocateHeap(punc);
 	}
 
@@ -2163,8 +2163,8 @@ void ProperNameMerge()
 	unsigned int end = UNINIT;
     uint64 kind = 0;
 	bool upperStart = false;
-	wordStarts[wordCount+1] = "";
-	wordStarts[wordCount+2] = "";
+	wordStarts[wordCount+1] = const_cast<char*>("");
+	wordStarts[wordCount+2] = const_cast<char*>("");
 	bool isGerman = !stricmp(current_language, "german");
 
     for (unsigned int i = FindOOBEnd(1); i <= wordCount; ++i)
@@ -2626,7 +2626,7 @@ bool ReplaceWords(char const* why,int i, int oldlength,int newlength,char** toke
 	memcpy(derivationIndex+i+newlength,backupDerivations,sizeof(short int) * afterCount);
 
 	wordCount += newlength - oldlength;
-	wordStarts[wordCount+1] = ""; 
+	wordStarts[wordCount+1] = const_cast<char*>("");
 	if (trace & TRACE_INPUT || spellTrace)
 	{
 		char* limit;
@@ -2675,19 +2675,19 @@ static bool Substitute(WORDP found, char* sub, unsigned  int i, int erasing)
 				WORDP Y = (i < (wordCount - 1)) ? FindWord(wordStarts[i + 2]) : 0;
 				if (X && X->properties & VERB_INFINITIVE)
 				{
-					sub = "would";
+					sub = const_cast<char*>("would");
 				}
 				else if (X && X->properties & VERB_PAST_PARTICIPLE)
 				{
-					sub = "had";
+					sub = const_cast<char*>("had");
 				}
 				else if (Y && Y->properties & VERB_INFINITIVE)
 				{
-					sub = "would";
+					sub = const_cast<char*>("would");
 				}
 				else // assume pastparticple "had"
 				{
-					sub = "had";
+					sub = const_cast<char*>("had");
 				}
 			}
 			else 

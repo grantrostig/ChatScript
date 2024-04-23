@@ -85,7 +85,7 @@ unsigned char keywordStarter[256] = // non special characters that will use defa
     1,1,1,1,1,1,
 };
 
-void ShowMatchResult(FunctionResult result, char* rule, char* label,int id)
+void ShowMatchResult(FunctionResult result, char const* rule, char const* label,int id)
 {
     if (trace & TRACE_LABEL && label && *label && !(trace & TRACE_PATTERN) && CheckTopicTrace())
     {
@@ -179,7 +179,7 @@ void GetPatternMatchedWords(char* buffer)
 
 static void DecodeFNRef(char* side)
 {
-    char* at = "";
+    char* at = const_cast<char*>("");
     if (side[1] == USERVAR_PREFIX) at = GetUserVariable(side + 1, false);
     else if (IsDigit(side[1])) at = FNVAR(side );
     at = SkipWhitespace(at);
@@ -480,7 +480,7 @@ static char* PatternMacroCall(WORDP D, char* ptr,bool& matched)
         }
         ReleaseStack(word);
     }
-    else ptr = ""; // null function
+    else ptr = const_cast<char*>(""); // null function
     if (result == NOPROBLEM_BIT) matched = true; // direct resumption
     else matched = false;
     return ptr;
@@ -1260,7 +1260,7 @@ bool Match(char* ptr, int depth,MARKDATA& hitdata, int rebindable, unsigned int 
 
                     if (*rhs == '^') // local function argument or indirect ^$ var  is LHS. copy across real argument
                     {
-                        char* atx = "";
+                        char* atx = const_cast<char*>("");
                         if (rhs[1] == USERVAR_PREFIX) atx = GetUserVariable(rhs + 1, false);
                         else if (IsDigit(rhs[1])) atx = FNVAR(rhs );
                         atx = SkipWhitespace(atx);
@@ -1467,7 +1467,7 @@ bool Match(char* ptr, int depth,MARKDATA& hitdata, int rebindable, unsigned int 
                 }
                 if (*op == '?' && *rhs != '~') // NOT a ? into a set test - means does this thing exist in sentence
                 {
-                    char* val = "";
+                    char* val = const_cast<char*>("");
                     if (*lhs == USERVAR_PREFIX) val = GetUserVariable(lhs, false);
                     else if (*lhs == '_') val = (quoted) ? wildcardOriginalText[GetWildcardID(lhs)] : wildcardCanonicalText[GetWildcardID(lhs)];
                     else if (*lhs == '^' && IsDigit(lhs[1])) val = FNVAR(lhs );

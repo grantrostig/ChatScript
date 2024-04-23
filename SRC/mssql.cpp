@@ -454,7 +454,7 @@ static void extract_error(const char *fn, SQLHANDLE handle, SQLSMALLINT type)
              get_error_max(), fn);
     do
     {
-        ret = SQLGetDiagRec(type,         // SQLSMALLINT HandleType,
+        ret = SQLGetDiagRecA(type,         // SQLSMALLINT HandleType,
                             handle,       // SQLHANDLE Handle
                             ++i,          // SQLSMALLINT RecNumber
                             SQLState,     // SQLCHAR * SQLState
@@ -755,7 +755,7 @@ static bool connect(DbInterface_t* dbp,
     HWND dhandle = nullptr;
     SQLSMALLINT in_len = (SQLSMALLINT) strlen(in_conn_str);
     outstrlen = sizeof(out_conn_str);
-    retcode = SQLDriverConnect(dbp->hdbc, // SQLHDBC ConnectionHandle
+    retcode = SQLDriverConnectA(dbp->hdbc, // SQLHDBC ConnectionHandle
                                dhandle,  // SQLHWND WindowHandle
                                (SQLCHAR*)in_conn_str, // SQLCHAR * InConnectionString
                                in_len, // SQLSMALLINT StringLength1
@@ -973,7 +973,7 @@ static bool file_write_prepare(DbInterface_t* dbp)
         const char* upsert = (dbp->use_stored_procedures ? upsert_sp : upsert_sql);
         SQLRETURN retcode;
 
-        retcode = SQLPrepare(dbp->hstmt_w, (SQLCHAR*)upsert, SQL_NTS);
+        retcode = SQLPrepareA(dbp->hstmt_w, (SQLCHAR*)upsert, SQL_NTS);
         if (is_error(retcode, "SQLPrepare", dbp->hstmt_w, SQL_HANDLE_STMT)) {
             printf("%s\n", error_buf);
             return false;
@@ -1070,7 +1070,7 @@ static bool file_read_prepare(DbInterface_t* dbp)
         const char *query = (dbp->use_stored_procedures ? query_sp : query_sql);
 
         SQLRETURN retcode;
-        retcode = SQLPrepare(dbp->hstmt_r, (SQLCHAR*)query, SQL_NTS);
+        retcode = SQLPrepareA(dbp->hstmt_r, (SQLCHAR*)query, SQL_NTS);
         if (is_error(retcode, "SQLPrepare", dbp->hstmt_r, SQL_HANDLE_STMT)) {
             printf("%s\n", error_buf);
             return false;
@@ -1102,7 +1102,7 @@ static bool file_read_execute(DbInterface_t* dbp)
         SQLRETURN ret;
 
         do {
-            ret = SQLGetDiagRec(SQL_HANDLE_STMT, // SQLSMALLINT HandleType,
+            ret = SQLGetDiagRecA(SQL_HANDLE_STMT, // SQLSMALLINT HandleType,
                                 dbp->hstmt_r,// SQLHANDLE Handle
                                 ++i,        // SQLSMALLINT RecNumber
                                 SQLState,   // SQLCHAR * SQLState

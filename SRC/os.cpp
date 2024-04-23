@@ -1149,7 +1149,7 @@ static int JsonOpenCryption(char* buffer, size_t size, char* xserver, bool decry
 	if (decrypt && size > 50) return size; // it was never encrypted, this is original material
 	char serverurl[1000];
 	char* id = loginID;
-	if (*id == 'b' && !id[1]) id = "u-8b02518d-c148-5d45-936b-491d39ced70c"; // cheat override to test outside of normal logins
+	if (*id == 'b' && !id[1]) id = const_cast<char*>("u-8b02518d-c148-5d45-936b-491d39ced70c"); // cheat override to test outside of normal logins
 	if (decrypt) sprintf(serverurl, "%s%s/datavalues/decryptedtokens", xserver, id);
 	else sprintf(serverurl, "%s%s/datavalues/encryptedtokens", xserver, id);
 
@@ -1264,7 +1264,7 @@ void EncryptRestart() // required
 size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file,bool decrypt,char const* filekind)
 {
 	size_t len = userFileSystem.userRead(buffer,size,count,file);
-	if (userFileSystem.userDecrypt && decrypt) return userFileSystem.userDecrypt(buffer,1,len,file,filekind); // can revise buffer
+	if (userFileSystem.userDecrypt && decrypt) return userFileSystem.userDecrypt(buffer,1,len,file, const_cast<char*>(filekind)); // can revise buffer
 	return len;
 }
 
@@ -1272,7 +1272,7 @@ size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file,b
 {
 	if (userFileSystem.userEncrypt && encrypt) 
 	{
-		size_t msgsize = userFileSystem.userEncrypt(buffer,size,count,file,filekind); // can revise buffer
+		size_t msgsize = userFileSystem.userEncrypt(buffer,size,count,file, const_cast<char*>(filekind)); // can revise buffer
         size = 1;
         count = msgsize;
 	}
@@ -1403,7 +1403,7 @@ void C_Directories(char* x)
 	size_t len = MAX_WORD_SIZE;
 	int bytes;
 #ifdef WIN32
-	bytes = GetModuleFileName(NULL, word, len);
+	bytes = GetModuleFileNameA(NULL, word, len);
 #else
 	char szTmp[32];
 	sprintf(szTmp, "/proc/%d/exe", getpid());
@@ -1585,14 +1585,14 @@ void WalkDirectory(char const* directory,FILEWALK function, uint64 flags,bool re
     size_t len = strlen(directory);
 	if (directory[len - 1] == '/')
 	{
-		directory[len - 1] = 0;	// remove the / since we add it 
+		const_cast<char*>(directory)[len - 1] = 0;	// remove the / since we add it 
 	}
 	if (*readPath) sprintf(fulldir,(char*)"%s/%s",staticPath,directory);
 	else strcpy(fulldir,directory);
     bool seendirs = false;
 
 #ifdef WIN32 // do all files in src directory
-	WIN32_FIND_DATA FindFileData;
+	WIN32_FIND_DATAA FindFileData;
 	DWORD dwError;
 	LPSTR DirSpec;
    
@@ -1604,7 +1604,7 @@ void WalkDirectory(char const* directory,FILEWALK function, uint64 flags,bool re
     strcpy(DirSpec,fulldir);
 	strcat(DirSpec,(char*)"/*");
 	// Find the first file in the directory.
-    HANDLE hFind = FindFirstFile(DirSpec, &FindFileData);
+    HANDLE hFind = FindFirstFileA(DirSpec, &FindFileData);
 	if (hFind == INVALID_HANDLE_VALUE) 
 	{
 		ReportBug((char*)"No such directory %s\r\n",DirSpec);
@@ -1623,7 +1623,7 @@ void WalkDirectory(char const* directory,FILEWALK function, uint64 flags,bool re
             (*function)(name, flags);
         }
     }
-    while (FindNextFile(hFind, &FindFileData) != 0)
+    while (FindNextFileA(hFind, &FindFileData) != 0)
     {
         if (FindFileData.cFileName[0] == '.' || !stricmp(FindFileData.cFileName, (char*)"bugs.txt")) continue;
         if (FindFileData.dwFileAttributes  & FILE_ATTRIBUTE_DIRECTORY)
@@ -1652,7 +1652,7 @@ void WalkDirectory(char const* directory,FILEWALK function, uint64 flags,bool re
 	if (!DirSpec) ReportBug("WalkDirectory malloc failed2");
     strcpy(DirSpec, fulldir);
     strcat(DirSpec, (char*)"/*");
-    hFind = FindFirstFile(DirSpec, &FindFileData);
+    hFind = FindFirstFileA(DirSpec, &FindFileData);
     if (FindFileData.cFileName[0] != '.' && stricmp(FindFileData.cFileName, (char*)"bugs.txt"))
     {
         if (FindFileData.dwFileAttributes  & FILE_ATTRIBUTE_DIRECTORY)
@@ -1661,7 +1661,7 @@ void WalkDirectory(char const* directory,FILEWALK function, uint64 flags,bool re
             WalkDirectory(xname, function, flags, true);
         }
     }
-    while (FindNextFile(hFind, &FindFileData) != 0)
+    while (FindNextFileA(hFind, &FindFileData) != 0)
     {
         if (FindFileData.cFileName[0] == '.' || !stricmp(FindFileData.cFileName, (char*)"bugs.txt")) continue;
         if (FindFileData.dwFileAttributes  & FILE_ATTRIBUTE_DIRECTORY)
@@ -1747,7 +1747,7 @@ static int MakePath(const string &rootDir, const string &path)
 char* GetUserPath(char* login)
 {
 	static string userPath;
-	char* path = "";
+	char* path = const_cast<char*>("");
 #ifdef USERPATHPREFIX
 	if (server)
 	{
@@ -2367,7 +2367,7 @@ static FILE* rotateLogOnLimit(const char *fname,const char* directory) {
 
 		int result = 0;
 #ifdef WIN32
-		SetCurrentDirectory(directory);
+		SetCurrentDirectoryA(directory);
 		result = rename(old + 1, newname); // some renames cant handle directory spec
 #else
 		result = rename(fname, newname);
@@ -2385,7 +2385,7 @@ static FILE* rotateLogOnLimit(const char *fname,const char* directory) {
 			}
 		}
 #ifdef WIN32
-		SetCurrentDirectory((char*)"..");
+		SetCurrentDirectoryA((char*)"..");
 #endif
 		out = FopenUTF8WriteAppend(fname);
     }
@@ -2899,7 +2899,7 @@ unsigned int Log(unsigned int channel, const char * fmt, ...)
 				strcpy(directory, externalBugLog);
 				char* dir = strrchr(directory, '/');
 				if (dir) *dir = 0;
-				else dir = "";
+				else dir = const_cast<char*>("");
 				BugLog(externalBugLog, directory, NULL, located); // always log bugs into bug folder
 			}
 		}

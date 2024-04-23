@@ -16,8 +16,8 @@ int impliedSet = ALREADY_HANDLED;	// what fact set is involved in operation
 int impliedWild = ALREADY_HANDLED;	// what wildcard is involved in operation
 char impliedOp = 0;					// for impliedSet, what op is in effect += = 
 HEAPREF variableChangedThreadlist = NULL;
-char* nullLocal = "``";
-char* nullGlobal = "";
+char* nullLocal = const_cast<char*>("``");
+char* nullGlobal = const_cast<char*>("");
 int wildcardIndex = 0;
 char wildcardOriginalText[MAX_WILDCARDS + 1][MAX_MATCHVAR_SIZE + 1];  // spot wild cards can be stored
 char wildcardCanonicalText[MAX_WILDCARDS + 1][MAX_MATCHVAR_SIZE + 1];  // spot wild cards can be stored
@@ -75,7 +75,7 @@ void SetBotVariable(char* word)
     }
 }
 
-static void ReadBotVariable(char* file)
+static void ReadBotVariable(char const* file)
 {
     char buffer[5000];
     char word[MAX_WORD_SIZE];
@@ -167,7 +167,7 @@ void ReadVariables(const char* name)
     }
 }
 
-int GetWildcardID(char* x) // wildcard id is "_10" or "_3"
+int GetWildcardID(char const* x) // wildcard id is "_10" or "_3"
 {
     if (!IsDigit(x[1])) return ILLEGAL_MATCHVARIABLE;
     unsigned int n = x[1] - '0';
@@ -358,8 +358,8 @@ void SetWildCardIndexStart(int index)
 void SetWildCard(char* value, char* canonicalValue, const char* index, unsigned int position)
 {
     // adjust values to assign
-    if (!value) value = "";
-    if (!canonicalValue) canonicalValue = "";
+    if (!value) value = const_cast<char*>("");
+    if (!canonicalValue) canonicalValue = const_cast<char*>("");
     if (strlen(value) > MAX_MATCHVAR_SIZE)
     {
         value[MAX_MATCHVAR_SIZE] = 0;
@@ -384,13 +384,13 @@ void SetWildCard(char* value, char* canonicalValue, const char* index, unsigned 
 
 char* GetwildcardText(unsigned int i, bool canon)
 {
-    if (i > MAX_WILDCARDS) return "";
+    if (i > MAX_WILDCARDS) return const_cast<char*>("");
     return canon ? wildcardCanonicalText[i] : wildcardOriginalText[i];
 }
 
 char* GetUserVariable(const char* word, bool nojson)
 {
-    if (!dictionaryLocked && !compiling && !rebooting && currentBeforeLayer != LAYER_BOOT) return "";
+    if (!dictionaryLocked && !compiling && !rebooting && currentBeforeLayer != LAYER_BOOT) return const_cast<char*>("");
     int len = 0;
     char* separator = (nojson) ? NULL : (char*)strchr(word, '.');
     char* bracket = (nojson) ? NULL : (char*)strchr(word, '[');
@@ -479,10 +479,10 @@ char* GetUserVariable(const char* word, bool nojson)
         char originalkeyname[SMALL_WORD_SIZE];
         if (factvalue)
         {
-            if (separator[1] == 's' || separator[1] == 'S') label = "subject";
-            else if (separator[1] == 'v' || separator[1] == 'V') label = "verb";
-            else if (separator[1] == 'f' || separator[1] == 'F') label = "flags";
-            else label = "object";
+            if (separator[1] == 's' || separator[1] == 'S') label = const_cast<char*>("subject");
+            else if (separator[1] == 'v' || separator[1] == 'V') label = const_cast<char*>("verb");
+            else if (separator[1] == 'f' || separator[1] == 'F') label = const_cast<char*>("flags");
+            else label = const_cast<char*>("object");
             strcpy(originalkeyname, label);
         }
         else if (*separator == '.') // it is a field
@@ -610,7 +610,7 @@ char* GetUserVariable(const char* word, bool nojson)
                 answer = Meaning2Word(F->object)->word;
                 if (!strcmp(answer, "null"))
                 {
-                    item = "``";
+                    item = const_cast<char*>("``");
                     return item + 2; // null value for locals
                 }
                 // does it continue?
@@ -829,7 +829,7 @@ void SetAPIVariable(WORDP D, char const* value) //  coming from api
             variableChangedThreadlist = AllocateHeapval(HV1_WORDP|HV2_STRING|HV3_INT,variableChangedThreadlist,
                 (uint64)D, (uint64)D->w.userValue, (uint64)D->internalBits);// save name
         }
-        D->w.userValue = value;
+        D->w.userValue = const_cast<char*>(value);
         if (D->word[1] == '^') // function definition assignment
         {
             variableChangedThreadlist = MakeFunctionDefinition(value); // change internal bits AFTER save of value
@@ -842,7 +842,7 @@ void SetUserVariable(const char* var, char const* word, bool assignment,bool reu
     WORDP D = StoreWord(var,AS_IS);				// find or create the var.
     if (!D) return; // ran out of memory
 #ifndef DISCARDTESTING
-    if (debugVar) (*debugVar)((char*)var, word);
+    if (debugVar) (*debugVar)((char*)var, const_cast<char*>(word));
 #endif
     // adjust value
     if (word) // has a nonnull value?
@@ -868,7 +868,7 @@ void SetUserVariable(const char* var, char const* word, bool assignment,bool reu
         else SpecialFact(MakeMeaning(D), (MEANING)(D->w.userValue - heapBase), 0);
     }
     if (csapicall == TEST_PATTERN || csapicall == TEST_OUTPUT)  SetAPIVariable(D, word);
-    else D->w.userValue = word;
+    else D->w.userValue = const_cast<char*>(word);
 
     HandleMonitoredEngineVariables(var, word,assignment);
 
@@ -1206,7 +1206,7 @@ void DumpUserVariables(bool doall)
     ReleaseStack((char*)arySortVariablesHelper); // short term
 }
 
-char* ProcessMath(char* ptr, char* oldValue, FunctionResult result) // paren expression returns answer on oldValue
+char* ProcessMath(char const* ptr, char* oldValue, FunctionResult result) // paren expression returns answer on oldValue
 {
     char word[MAX_WORD_SIZE];
     char op[MAX_WORD_SIZE];
@@ -1227,7 +1227,7 @@ char* ProcessMath(char* ptr, char* oldValue, FunctionResult result) // paren exp
         else if (*word == ')')
         {
             --level;
-            if (level == 0) return ptr; // done
+            if (level == 0) return const_cast<char*>(ptr); // done
             continue;
         }
         if (IsArithmeticOp(word)) strcpy(op, word);
@@ -1248,10 +1248,10 @@ char* ProcessMath(char* ptr, char* oldValue, FunctionResult result) // paren exp
         strcpy(oldValue, answer);
     }
 
-    return ptr;
+    return const_cast<char*>(ptr);
 }
 
-char* PerformAssignment(char* word, char* ptr, char* buffer, FunctionResult &result, bool nojson)
+char* PerformAssignment(char* word, char const* ptr, char* buffer, FunctionResult &result, bool nojson)
 {// assign to and from  $var, _var, ^var, @set, and %sysvar
     char op[MAX_WORD_SIZE];
     currentFact = NULL;					// No assignment can start with a fact lying around
@@ -1266,14 +1266,14 @@ char* PerformAssignment(char* word, char* ptr, char* buffer, FunctionResult &res
         if (*value == LCLVARDATA_PREFIX && value[1] == LCLVARDATA_PREFIX)//  not allowed to write indirect to caller arg
         {
             result = FAILRULE_BIT;
-            return ptr;
+            return const_cast<char*>(ptr);
         }
         strcpy(word, value); // change over to indirect to assign onto
         strcpy(word, GetUserVariable(word)); // now indirect thru him if we can
         if (!*word)
         {
             result = FAILRULE_BIT;
-            return ptr;
+            return const_cast<char*>(ptr);
         }
     }
     else if (*word == '^' && IsDigit(word[1])) // indirect function variable assign
@@ -1282,7 +1282,7 @@ char* PerformAssignment(char* word, char* ptr, char* buffer, FunctionResult &res
         if (*value == LCLVARDATA_PREFIX && value[1] == LCLVARDATA_PREFIX)//  not allowed to write indirect to caller arg
         {
             result = FAILRULE_BIT;
-            return ptr;
+            return const_cast<char*>(ptr);
         }
         strcpy(word, value); // change over to assign onto caller var
     }
@@ -1295,14 +1295,14 @@ char* PerformAssignment(char* word, char* ptr, char* buffer, FunctionResult &res
         if (impliedSet == ILLEGAL_FACTSET)
         {
             result = FAILRULE_BIT;
-            return ptr;
+            return const_cast<char*>(ptr);
         }
         char* at = word + 1;
         while (*++at && IsDigit(*at)) { ; } // find end
         if (*at) // not allowed to assign onto annotated factset
         {
             result = FAILRULE_BIT;
-            return ptr;
+            return const_cast<char*>(ptr);
         }
     }
     else if (*word == '_')
@@ -1311,7 +1311,7 @@ char* PerformAssignment(char* word, char* ptr, char* buffer, FunctionResult &res
         if (impliedWild == ILLEGAL_MATCHVARIABLE)
         {
             result = FAILRULE_BIT;
-            return ptr;
+            return const_cast<char*>(ptr);
         }
     }
     int setToImply = impliedSet; // what he originally requested
@@ -1361,7 +1361,7 @@ char* PerformAssignment(char* word, char* ptr, char* buffer, FunctionResult &res
     }
     else
     {
-        char* hold = ptr;
+        char* hold = const_cast<char*>(ptr);
         ptr = hold; // debug loop
         ptr = GetCommandArg(ptr, buffer, result, OUTPUT_NOCOMMANUMBER | ASSIGNMENT); // need to see null assigned -- store raw numbers, not with commas, lest relations break
         if (*buffer == '#' && !strchr(buffer,' ')) // substitute a constant? user type-in :set command for example
@@ -1591,5 +1591,5 @@ exit:
     impliedOp = 0;
     if (trace & TRACE_OUTPUT && CheckTopicTrace()) Log(USERLOG, "\r\n");
 
-    return ptr;
+    return const_cast<char*>(ptr);
 }

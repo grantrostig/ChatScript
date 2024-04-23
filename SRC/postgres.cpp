@@ -60,7 +60,7 @@ FunctionResult DBCloseCode(char* buffer)
 			connDummy = false;
 			return NOPROBLEM_BIT;
 		}
-		char* msg = "db not open\r\n";
+		char* msg = const_cast<char*>("db not open\r\n");
 		SetUserVariable((char*)"$$db_error",msg);	// pass along the error
 		Log(USERLOG,msg);
 		return FAILRULE_BIT;
@@ -80,7 +80,7 @@ FunctionResult DBInitCode(char* buffer)
 	}
 	if (conn) 
 	{
-		char* msg = "DB already opened\r\n";
+		char* msg = const_cast<char*>("DB already opened\r\n");
 		SetUserVariable((char*)"$$db_error",msg);	// pass along the error
 		if (trace & TRACE_SQL && CheckTopicTrace()) Log(USERLOG,msg);
  		return FAILRULE_BIT;
@@ -403,7 +403,7 @@ FunctionResult DBExecuteCode(char* buffer)
 		if (connDummy) return NOPROBLEM_BIT;
 		if (buffer)
 		{
-			char* msg = "DB not opened\r\n";
+			char* msg = const_cast<char*>("DB not opened\r\n");
 			SetUserVariable((char*)"$$db_error",msg);	// pass along the error
 			if (trace & TRACE_SQL && CheckTopicTrace()) Log(USERLOG,msg);
 		}

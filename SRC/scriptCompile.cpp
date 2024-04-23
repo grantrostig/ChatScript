@@ -90,7 +90,7 @@ static char* topicFiles[] = //   files created by a topic refresh from scratch
 static void WriteKey(char* word);
 static FILE* mapFile = NULL;					// for IDE
 static FILE* mapFileJson = NULL;                // easier to parse
-static char* ReadMacro(char* ptr, FILE* in, char* kind, unsigned int build,char* data);
+static char* ReadMacro(char* ptr, FILE* in, char const* kind, unsigned int build,char* data);
 static unsigned int mapTopicFileCount = 0;
 static unsigned int mapItemCount = 0;
 static unsigned int mapRuleCount = 0;
@@ -573,7 +573,7 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
                     }
                     hat = word - 1;
                     if (strstr(readBuffer, "rename:")) // accept rename of existing constant twice in a row
-                        hat = " ";
+                        hat = const_cast<char*>(" ");
                     while ((hat = strchr(hat + 1,'#'))) // rename #constant or ##constant
                     {
                         if (*(hat - 1) == '\\') continue;	// escaped
@@ -1632,8 +1632,8 @@ static void WriteVerify(char const* label)
 
 	if (valid)
 	{
-		char* space = "";
-		if (REJOINDERID(currentRuleID)) space = "    ";
+		char* space = const_cast<char*>("");
+		if (REJOINDERID(currentRuleID)) space = const_cast<char*>("    ");
 		for (unsigned int i = 0; i < verifyIndex; ++i)
 		{
 			if (*label) fprintf(valid, (char*)"%s%s.%u.%u=%s  %s\r\n", space, currentTopicName, TOPLEVELID(currentRuleID), REJOINDERID(currentRuleID), label, verifyLines[i]);
@@ -2433,15 +2433,15 @@ static void TestSubstitute(char* word,char* message)
 	if (E)
 	{
 		if (E->word[0] == '!') return; // ignore conditional
-		char* which = "Something";
-		if (D->internalBits & DO_SUBSTITUTES) which = "Substitutes.txt";
-		if (D->internalBits & DO_CONTRACTIONS) which = "Contractions.txt";
-		if (D->internalBits & DO_ESSENTIALS) which = "Essentials.txt";
-		if (D->internalBits & DO_INTERJECTIONS) which = "Interjections.txt";
-		if (D->internalBits & DO_BRITISH) which = "British.txt";
-		if (D->internalBits & DO_SPELLING) which = "Spelling.txt";
-		if (D->internalBits & DO_TEXTING) which = "Texting.txt";
-		if (D->internalBits & DO_PRIVATE) which = "user private substitution";
+		char* which = const_cast<char*>("Something");
+		if (D->internalBits & DO_SUBSTITUTES) which = const_cast<char*>("Substitutes.txt");
+		if (D->internalBits & DO_CONTRACTIONS) which = const_cast<char*>("Contractions.txt");
+		if (D->internalBits & DO_ESSENTIALS) which = const_cast<char*>("Essentials.txt");
+		if (D->internalBits & DO_INTERJECTIONS) which = const_cast<char*>("Interjections.txt");
+		if (D->internalBits & DO_BRITISH) which = const_cast<char*>("British.txt");
+		if (D->internalBits & DO_SPELLING) which = const_cast<char*>("Spelling.txt");
+		if (D->internalBits & DO_TEXTING) which = const_cast<char*>("Texting.txt");
+		if (D->internalBits & DO_PRIVATE) which = const_cast<char*>("user private substitution");
 		size_t len = strlen(D->word);
 		currentLineColumn -= len;
 		if (E->word[1] && E->word[0] != '~' && E->word[0] != '(')	// concept changes of words will be considered interjections and pattern match form is accepted
@@ -4857,7 +4857,7 @@ Then one of 3 kinds of character:
                     char* bots = topicName->w.topicBots;
                     if (!bots || !*bots)
                     {
-                        bots = "*"; // general access
+                        bots = const_cast<char*>("*"); // general access
                     }
                      while (*bots)
                     {
@@ -4984,7 +4984,7 @@ static void ErasePendingFunction(WORDP D,int functionArgumentCount)
 	}
 }
 
-static char* ReadMacro(char* ptr,FILE* in,char* kind,unsigned int build,char* data)
+static char* ReadMacro(char* ptr,FILE* in,char const* kind,unsigned int build,char* data)
 {
 	bool table = !stricmp(kind,(char*)"table:"); // create as a transient notwrittentofile 
 	bool apimacro = !stricmp(kind, (char*)"apimacro:"); // create as a transient notwrittentofile 
@@ -5786,7 +5786,7 @@ static char* ReadBot(char* ptr)
 	}
 	Log(USERLOG,"Reading bot restriction: %s\r\n", original);
 	echo = oldecho;
-	return "";
+	return const_cast<char*>("");
 }
 
 static char* ReadTopic(char* ptr, FILE* in,unsigned int build)
@@ -6463,7 +6463,7 @@ void WriteCanon(char* word, char* canon, char* form)
 	char filename[SMALL_WORD_SIZE];
 	sprintf(filename,(char*)"%s/BUILD%s/canon%s.txt", topicfolder,baseName,baseName);
 	FILE* out = FopenUTF8WriteAppend(filename);
-	if (!form) form = "";
+	if (!form) form = const_cast<char*>("");
 	fprintf(out,(char*)" %s %s %s\r\n", canon,word,form);
 	fclose(out); // dont use FClose
 }
@@ -6724,7 +6724,7 @@ static void ReadTopicFile(char* name,uint64 buildid) //   read contents of a top
 
 	//   if error occurs lower down, flush to here
 	patternContext = false;
-	char* ptr = "";
+	char* ptr = const_cast<char*>("");
     int buffercount = bufferIndex;
 	int frameindex = globalDepth;
 	if (setjmp(scriptJump[++jumpIndex]))

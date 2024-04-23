@@ -24,7 +24,7 @@ void ExecuteConceptPatterns(FACT* specificPattern = NULL);
 bool MatchesPattern(char* word, char* pattern);
 void GetPatternData(char* buffer);
 void GetPatternMatchedWords(char* buffer);
-bool Match(char* ptr, int depth, MARKDATA& hitdata,int rebindable,unsigned int wildcardSelector,
+bool Match(char const* ptr, int depth, MARKDATA& hitdata,int rebindable,unsigned int wildcardSelector,
 	int& firstmatched,char kind,
 	bool reverse = false);
 extern int indentBasis;
@@ -34,5 +34,5 @@ extern HEAPREF matchedWordsList;
 extern bool patternRetry;
 extern bool deeptrace;
 extern int patternDepth;
-void ShowMatchResult(FunctionResult result, char* rule,char* label,int id = 0);
+void ShowMatchResult(FunctionResult result, char const* rule,char const* label,int id = 0);
 #endif

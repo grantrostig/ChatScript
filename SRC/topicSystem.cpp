@@ -72,7 +72,7 @@ int outputRejoinderRuleID = NO_REJOINDER;
 int outputRejoinderTopic = NO_REJOINDER;
 int inputRejoinderTopic = NO_REJOINDER;					// what topic were we in, that we should check for update
 int inputRejoinderRuleID = NO_REJOINDER;
-char* howTopic = "";
+char* howTopic = const_cast<char*>("");
 
 // block erasing with this
 static char* keepSet[MAX_NO_ERASE];					// rules not authorized to erase themselves
@@ -197,7 +197,7 @@ void Encode(unsigned int val, char*& ptr, int size)
 	ptr[2] = code[val % USED_CODES];
 }
 
-unsigned int Decode(char* data, int size)
+unsigned int Decode(char const* data, int size)
 {
 	if (size == 1) return uncode[*data];
 	else if (size == 2)
@@ -400,7 +400,7 @@ char* GetVerify(char* tag, int& topicid, int& id) //  ~topic.#.#=LABEL<~topic.#.
 {
 	topicid = 0;
 	id = -1;
-	if (!*tag)  return "";
+	if (!*tag)  return const_cast<char*>("");
 	char* verify = AllocateStack(NULL, MAX_WORD_SIZE); // verify input is small, this is safe
 	char topicname[MAX_WORD_SIZE];
 	strcpy(topicname, tag);
@@ -410,7 +410,7 @@ char* GetVerify(char* tag, int& topicid, int& id) //  ~topic.#.#=LABEL<~topic.#.
 	if (IsDigit(*tag)) strcpy(topicname, GetTopicName(atoi(tag)));
 	char file[SMALL_WORD_SIZE];
 	WORDP D = FindWord(topicname);
-	if (!D) return "";
+	if (!D) return const_cast<char*>("");
 
 	sprintf(file, (char*)"VERIFY/%s-b%c.txt", topicname + 1, (D->internalBits & BUILD0) ? '0' : '1');
 	topicid = FindTopicIDByName(topicname, true);
@@ -485,7 +485,7 @@ void RemoveTopicFlag(int topicid, unsigned int flag)
 char* GetTopicName(unsigned int topicid, bool actual)
 {
 	topicBlock* block = TI(topicid);
-	if (!topicid || !block || !block->topicName) return "";
+	if (!topicid || !block || !block->topicName) return const_cast<char*>("");
 	if (actual) return block->topicName; // full topic name (if duplicate use number)
 
 	static char name[MAX_WORD_SIZE];
@@ -498,11 +498,11 @@ char* GetTopicName(unsigned int topicid, bool actual)
 static char* RuleTypeName(char type)
 {
 	char* name;
-	if (type == GAMBIT) name = "gambits";
-	else if (type == QUESTION) name = "questions";
-	else if (type == STATEMENT) name = "statements";
-	else if (type == STATEMENT_QUESTION) name = "responders";
-	else name = "unknown";
+	if (type == GAMBIT) name = const_cast<char*>("gambits");
+	else if (type == QUESTION) name = const_cast<char*>("questions");
+	else if (type == STATEMENT) name = const_cast<char*>("statements");
+	else if (type == STATEMENT_QUESTION) name = const_cast<char*>("responders");
+	else name = const_cast<char*>("unknown");
 	return name;
 }
 
@@ -716,7 +716,7 @@ int HasGambits(int topicid) // check each gambit to find a usable one (may or ma
 
 char* ShowRule(char* rule, bool concise, bool pattern)
 {
-	if (rule == NULL) return "?";
+	if (rule == NULL) return const_cast<char*>("?");
 
 	static char result[300];
 	result[0] = rule[0];
@@ -1710,9 +1710,9 @@ FunctionResult PerformTopic(int active, char* buffer, char* rule, unsigned int i
 	if (!active) active = (tokenFlags & QUESTIONMARK) ? QUESTION : STATEMENT;
 
 	char* oldhow = howTopic;
-	if (active == QUESTION) howTopic = "question";
-	else if (active == STATEMENT) howTopic = "statement";
-	else howTopic = "gambit";
+	if (active == QUESTION) howTopic = const_cast<char*>("question");
+	else if (active == STATEMENT) howTopic = const_cast<char*>("statement");
+	else howTopic = const_cast<char*>("gambit");
 
 	FunctionResult result = RETRYTOPIC_BIT;
 	unsigned oldTopic = currentTopicID;
@@ -2160,7 +2160,7 @@ void CreateFakeTopics(char* data) // ExtraTopic can be used to test this, naming
 		// disable native topic if there
 		if (D)
 		{
-			TI(D->x.topicIndex)->topicName = ""; // make prebuilt topic unfindable
+			TI(D->x.topicIndex)->topicName = const_cast<char*>(""); // make prebuilt topic unfindable
 			overlaps[overlapCount++] = D;
 		}
 		MtopicName = MakeMeaning(StoreWord(word));
@@ -3281,8 +3281,8 @@ static void InitLayerMemory(const char* name, int layer)
 	size_t size = sizeof(topicBlock);
 	// each layer we allocate ptr space for prior layers but we dont use them.
 	topicBlockPtrs[layer] = (topicBlock*)AllocateHeap(NULL, numberOfTopics + 1, size, true); // reserved space for each topic to have its data
-	for (unsigned int i = priorTopicCount + 1; i <= numberOfTopics; ++i) TI(i)->topicName = "";
-	if (layer == 0)  TI(0)->topicName = "";
+	for (unsigned int i = priorTopicCount + 1; i <= numberOfTopics; ++i) TI(i)->topicName = const_cast<char*>("");
+	if (layer == 0)  TI(0)->topicName = const_cast<char*>("");
 }
 
 static void AddRecursiveMember(WORDP D, WORDP set, unsigned int build)

@@ -101,7 +101,7 @@ void InitSpellCheck()
 	}
 }
 
-static bool SameUTF(char* word, char* utfstring)
+static bool SameUTF(char* word, char const* utfstring)
 {
 	size_t len = strlen(utfstring);
 	return (!strncmp(word, utfstring, len));
@@ -673,7 +673,7 @@ bool SpellCheckSentence()
 			word[l - 5] = 0;
 			WORDP X = StoreWord(word);
 			tokens[1] = X->word;
-			tokens[2] = "\"";
+			tokens[2] = const_cast<char*>("\"");
 			fixedSpell = ReplaceWords("split &quot", i, 1, 2, tokens);
 			--i; // retry spellcheck
 			continue;
@@ -769,7 +769,7 @@ bool SpellCheckSentence()
 				{
 					*quo = 0;
 					tokens[1] = word;
-					tokens[2] = "inch";
+					tokens[2] = const_cast<char*>("inch");
 					tokens[3] = quo+1;
 					fixedSpell = ReplaceWords("joined word number", i, 1, 3, tokens);
 					continue;
@@ -976,7 +976,7 @@ bool SpellCheckSentence()
 			if (X)
 			{
 				tokens[1] = X->word;
-				tokens[2] = "-";
+				tokens[2] = const_cast<char*>("-");
 				fixedSpell = ReplaceWords("trailing hyphen split", i, 1, 2, tokens);
 				continue;
 			}
@@ -1150,7 +1150,7 @@ bool SpellCheckSentence()
 			WORDP E = StoreWord(slash + 1);
 			char* tokenlist[4];
 			tokenlist[1] = D->word;
-			tokenlist[2] = "/";
+			tokenlist[2] = const_cast<char*>("/");
 			tokenlist[3] = E->word;
 			fixedSpell = ReplaceWords("Split", i, 1, 3, tokenlist);
 			--i;
@@ -1876,7 +1876,7 @@ static char* StemSpell(char* word,unsigned int i,uint64& base)
                 return GetPluralNoun(F->word,pl);
             }
             base = VERB | VERB_PRESENT_3PS;
-			ending = "s";
+			ending = const_cast<char*>("s");
         }
    }
    if (ending)

@@ -198,7 +198,7 @@ char* UTF16_2_UTF8(char* in,bool withinquote);
 
 // boolean style tests
 bool AdjustUTF8(char* start, char* buffer);
-bool IsArithmeticOperator(char* word);
+bool IsArithmeticOperator(char const* word);
 bool IsArithmeticOp(char* word);
 uint64 ComposeNumber(unsigned int i, unsigned int& end);
 unsigned IsNumber(char* word,int useNumberStyle = AMERICAN_NUMBERS,bool placeAllowed = true); // returns kind of number
@@ -250,8 +250,8 @@ bool ReadDocument(char* inBuffer,FILE* sourceFile);
 
 // reading functions
 char* ReadFlags(char* ptr,uint64& flags,bool &bad, bool &response, bool factcall = false);
-char* ReadHex(char* ptr, uint64 & value);
-char* ReadInt(char* ptr, int & value);
+char* ReadHex(char const* ptr, uint64 & value);
+char* ReadInt(char const* ptr, int & value);
 char* ReadInt64(char const* ptr, int64 & w);
 int64 atoi64(char* ptr );
 char* ReadQuote(char* ptr, char* buffer,bool backslash = false, bool noblank = true,int limit = MAX_WORD_SIZE - 10);
@@ -259,7 +259,7 @@ char* ReadArgument(char* ptr, char* buffer, FunctionResult &result);
 
 int ReadALine(char* buf,FILE* file,unsigned int limit = maxBufferSize,bool returnEmptyLines = false,bool convertTabs = true, bool untouched = false);
 char* SkipWhitespace(const char* ptr);
-char* BalanceParen(char* ptr,bool within=true,bool wildcards=false);
+char* BalanceParen(char const* ptr,bool within=true,bool wildcards=false);
 int64 NumberPower(char* number,int useNumberStyle = AMERICAN_NUMBERS);
 int64 Convert2Integer(char* word,int useNumberStyle = AMERICAN_NUMBERS);
 

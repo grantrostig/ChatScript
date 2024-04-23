@@ -3,7 +3,7 @@
 
 extern SYSTEMVARIABLE sysvars[];
 
-char* compileDate = __DATE__    " "  __TIME__;
+char* compileDate = const_cast<char*>(__DATE__    " "  __TIME__);
 
 
 static char systemValue[MAX_WORD_SIZE]; // common answer place
@@ -31,9 +31,9 @@ char* SystemVariable(char* word,char* value)
 {
 	WORDP D = FindWord(word);
 	unsigned int index = (D) ? D->x.topicIndex : 0;
-	if (!index) return "";
+	if (!index) return const_cast<char*>("");
 	char* var = (*sysvars[index].address)(value); // performs assignment
-	if (!var) return "";
+	if (!var) return const_cast<char*>("");
 	return var;
 }
 
@@ -45,9 +45,9 @@ void DumpSystemVariables()
 		char* result = (sysvars[i].address) ? (*sysvars[i].address)(NULL) : (char*)""; // actual variable or header
 		if (!*result) 
 		{
-			if (strstr(sysvars[i].comment,(char*)"Boolean")) result = "null";
-			else if (strstr(sysvars[i].comment,(char*)"Numeric")) result = "0";
-			else result = "null";
+			if (strstr(sysvars[i].comment,(char*)"Boolean")) result = const_cast<char*>("null");
+			else if (strstr(sysvars[i].comment,(char*)"Numeric")) result = const_cast<char*>("0");
+			else result = const_cast<char*>("null");
 		}
 		if (sysvars[i].address) Log(USERLOG,"%s = %s - %s\r\n",sysvars[i].name, result,sysvars[i].comment);  // actual variable
 		else Log(USERLOG,"%s\r\n",sysvars[i].name);  // header
@@ -71,7 +71,7 @@ static char* Sdate(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (regression) return "1";
+	if (regression) return const_cast<char*>("1");
 	struct tm ptm;
  	char* x = GetTimeInfo(&ptm) + 8;
     ReadCompiledWord(x,systemValue);
@@ -83,19 +83,19 @@ static char* SdayOfWeek(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-    if (regression) return "Monday";
+    if (regression) return const_cast<char*>("Monday");
 	struct tm ptm;
     ReadCompiledWord(GetTimeInfo(&ptm),systemValue);
     switch(systemValue[1])
     {
-        case 'o': return "Monday";
+        case 'o': return const_cast<char*>("Monday");
         case 'u': return (char*)((systemValue[0] == 'T') ? (char*)"Tuesday" : (char*)"Sunday");
-        case 'e': return "Wednesday";
-        case 'h': return "Thursday";
-        case 'r': return "Friday";
-        case 'a': return "Saturday";
+        case 'e': return const_cast<char*>("Wednesday");
+        case 'h': return const_cast<char*>("Thursday");
+        case 'r': return const_cast<char*>("Friday");
+        case 'a': return const_cast<char*>("Saturday");
     }
-	return "";
+	return const_cast<char*>("");
 }
 
 static char* SdayNumberOfWeek(char* value)
@@ -103,7 +103,7 @@ static char* SdayNumberOfWeek(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (regression) return "2";
+	if (regression) return const_cast<char*>("2");
 	struct tm ptm;
 	ReadCompiledWord(GetTimeInfo(&ptm),systemValue);
 	int n;
@@ -159,7 +159,7 @@ static char* Shour(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (regression) return "11";
+	if (regression) return const_cast<char*>("11");
 	struct tm ptm;
 	strncpy(systemValue,GetTimeInfo(&ptm)+11,2);
 	systemValue[2] = 0;
@@ -171,7 +171,7 @@ static char* SleapYear(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (regression) return "";
+	if (regression) return const_cast<char*>("");
 	time_t rawtime;
 	time (&rawtime );
 	struct tm timeinfo;
@@ -188,7 +188,7 @@ static char* Sdaylightsavings(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (regression) return "1";
+	if (regression) return const_cast<char*>("1");
 	time_t rawtime;
 	time (&rawtime );
  	struct tm timeinfo;
@@ -202,7 +202,7 @@ static char* Sminute(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (regression) return "12";
+	if (regression) return const_cast<char*>("12");
 	struct tm ptm;
 	ReadCompiledWord(GetTimeInfo(&ptm)+14,systemValue);
 	systemValue[2] = 0;
@@ -214,25 +214,25 @@ static char* Smonth(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (regression) return "6";
+	if (regression) return const_cast<char*>("6");
  	struct tm ptm;
     ReadCompiledWord(GetTimeInfo(&ptm)+SKIPWEEKDAY,systemValue);
 	switch(systemValue[0])
 	{
 		case 'J':  //   january june july 
-			if (systemValue[1] == 'a') return "1";
-			else if (systemValue[2] == 'n') return "6";
-			else if (systemValue[2] == 'l') return "7";
+			if (systemValue[1] == 'a') return const_cast<char*>("1");
+			else if (systemValue[2] == 'n') return const_cast<char*>("6");
+			else if (systemValue[2] == 'l') return const_cast<char*>("7");
 			break;
-		case 'F': return "2";
+		case 'F': return const_cast<char*>("2");
 		case 'M': return (systemValue[2] != 'y') ? (char*)"3" : (char*)"5"; 
   		case 'A': return (systemValue[1] == 'p') ? (char*)"4" : (char*)"8";
-		case 'S': return "9";
-		case 'O': return "10";
-        case 'N': return "11";
-        case 'D': return "12";
+		case 'S': return const_cast<char*>("9");
+		case 'O': return const_cast<char*>("10");
+        case 'N': return const_cast<char*>("11");
+        case 'D': return const_cast<char*>("12");
 	}
-	return "";
+	return const_cast<char*>("");
 }
 
 static char* SmonthName(char* value)
@@ -240,25 +240,25 @@ static char* SmonthName(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (regression) return "June";
+	if (regression) return const_cast<char*>("June");
  	struct tm ptm;
     ReadCompiledWord(GetTimeInfo(&ptm)+SKIPWEEKDAY,systemValue);
 	switch(systemValue[0])
 	{
 		case 'J':  //   january june july 
-			if (systemValue[1] == 'a') return "January";
-			else if (systemValue[2] == 'n') return "June";
-			else if (systemValue[2] == 'l') return "July";
+			if (systemValue[1] == 'a') return const_cast<char*>("January");
+			else if (systemValue[2] == 'n') return const_cast<char*>("June");
+			else if (systemValue[2] == 'l') return const_cast<char*>("July");
 			break;
-		case 'F': return "February";
+		case 'F': return const_cast<char*>("February");
 		case 'M': return (systemValue[2] != 'y') ? (char*)"March" : (char*)"May"; 
   		case 'A': return (systemValue[1] == 'p') ? (char*)"April" : (char*)"August";
-		case 'S': return "September";
-		case 'O': return "October";
-        case 'N': return "November";
-        case 'D': return "December";
+		case 'S': return const_cast<char*>("September");
+		case 'O': return const_cast<char*>("October");
+        case 'N': return const_cast<char*>("November");
+        case 'D': return const_cast<char*>("December");
 	}
-	return "";
+	return const_cast<char*>("");
 }
 
 static char* Ssecond(char* value)
@@ -266,7 +266,7 @@ static char* Ssecond(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (regression) return "12";
+	if (regression) return const_cast<char*>("12");
 	struct tm ptm;
     ReadCompiledWord(GetTimeInfo(&ptm)+17,systemValue);
     systemValue[2] = 0;
@@ -278,7 +278,7 @@ static char* Svolleytime(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (regression) return "12";
+	if (regression) return const_cast<char*>("12");
 	uint64 diff = ElapsedMilliseconds() - volleyStartTime;
     sprintf(systemValue,(char*)"%u",(unsigned int)diff);
     return systemValue;
@@ -289,7 +289,7 @@ static char* Stime(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (regression) return "01:40";
+	if (regression) return const_cast<char*>("01:40");
 	struct tm ptm;
     strncpy(systemValue,GetTimeInfo(&ptm)+11,5);
     systemValue[5] = 0;
@@ -324,7 +324,7 @@ static char* SweekOfMonth(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-    if (regression) return "1";
+    if (regression) return const_cast<char*>("1");
 	int n;
 	struct tm ptm;
 	char* x = GetTimeInfo(&ptm) + 8;
@@ -340,7 +340,7 @@ static char* Syear(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (regression) return "2017";
+	if (regression) return const_cast<char*>("2017");
 	struct tm ptm;
     ReadCompiledWord(GetTimeInfo(&ptm)+20,systemValue);
     return (regression) ? (char*)"1951" : systemValue;
@@ -356,7 +356,7 @@ static char* Srand(char* value) // 1 .. 100
 		sprintf(systemValue, (char*)"%i", forcedRandom);
 		return systemValue;
 	}
-	if (regression) return "0";
+	if (regression) return const_cast<char*>("0");
 	sprintf(systemValue,(char*)"%u",random(100)+1);
 	return systemValue;
 }
@@ -741,7 +741,7 @@ static char* Srule(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (currentTopicID == 0 || currentRuleID == -1) return "";
+	if (currentTopicID == 0 || currentRuleID == -1) return const_cast<char*>("");
 	sprintf(systemValue,(char*)"%s.%u.%u",GetTopicName(currentTopicID),TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
     return systemValue;
 }
@@ -751,7 +751,7 @@ static char* StestPattern(char* value)
     static char hold[50] = ".";
     if (value) return AssignValue(hold,value);
     if (*hold != '.') return hold;
-    if (testPatternIndex == -1) return "";
+    if (testPatternIndex == -1) return const_cast<char*>("");
     sprintf(systemValue,(char*)"%d",testPatternIndex);
     return systemValue;
 }
@@ -761,7 +761,7 @@ static char* Sserver(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (!server) return "";
+	if (!server) return const_cast<char*>("");
 
 	sprintf(systemValue,(char*)"%u",port);
 	return systemValue;
@@ -798,7 +798,7 @@ static char* STrace(char* value)
 	static char hold[50] = ".";
 	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (!trace) return "0";
+	if (!trace) return const_cast<char*>("0");
 	sprintf(systemValue,(char*)"%u",trace);
 	return systemValue;
 }
@@ -854,12 +854,12 @@ static char* SRestart(char* value)
 		*systemRestartValue = 0;
 	}
 
-	if (value && *value == '.') return ""; // ignore init
+	if (value && *value == '.') return const_cast<char*>(""); // ignore init
 	else if (value) 
 	{
 		if (strlen(value) >= MAX_WORD_SIZE) value[MAX_WORD_SIZE-1] = 0;
 		strcpy(systemRestartValue,value);
-		return "";
+		return const_cast<char*>("");
 	}
 	else return systemRestartValue;
 }
@@ -1067,9 +1067,9 @@ static char* Stense(char* value)
 		else if (!stricmp(value,(char*)"present"))  {tokenFlags &= -1 & (FUTURE|PAST); tokenFlags |= PRESENT;}
 	}
 	if (*hold != '.') return hold;
-	else if (tokenFlags & PAST) return "past";
-	else if (tokenFlags & FUTURE) return "future";
-	else return "present";
+	else if (tokenFlags & PAST) return const_cast<char*>("past");
+	else if (tokenFlags & FUTURE) return const_cast<char*>("future");
+	else return const_cast<char*>("present");
 }
 
 static char* SexternalTagging(char* value)
@@ -1080,7 +1080,7 @@ static char* SexternalTagging(char* value)
 #ifdef TREETAGGER
 	return externalPostagger ? (char*)"1" : (char*)"";
 #else
-	return "";
+	return const_cast<char*>("");
 #endif
 }
 
@@ -1206,7 +1206,7 @@ static char* SlastQuestion(char* value)
 	static char hold[50] = ".";
  	if (value) return AssignValue(hold,value);
 	if (*hold != '.') return hold;
-	if (!responseIndex) return "";
+	if (!responseIndex) return const_cast<char*>("");
 	char* sentence = SkipWhitespace(responseData[responseOrder[responseIndex-1]].response);
 	char* end = strchr(sentence, '?');
 	bool c = (end) ? true : false;

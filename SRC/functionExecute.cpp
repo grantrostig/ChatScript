@@ -135,14 +135,14 @@ typedef std::map<WORDP, double> wordScore_t;
 //////////////////////////////////////////////////////////
 unsigned int callindex = 0;
 
-CALLFRAME* ChangeDepth(int value, const char* name, bool nostackCutback, char* code)
+CALLFRAME* ChangeDepth(int value, const char* name, bool nostackCutback, char const* code)
 {
 	if (value == 0) // secondary call from userfunction. frame is now valid
 	{
 		CALLFRAME* frame = frameList[globalDepth];
 		if (showDepth) Log(USERLOG, "same depth %u %s \r\n", globalDepth, name);
 		if (name) frame->label = (char*)name; // override
-		if (code) frame->code = code;
+		if (code) frame->code = const_cast<char*>(code);
 #ifndef DISCARDTESTING
 		if (debugCall) (*debugCall)(frame->label, true);
 #endif
@@ -193,7 +193,7 @@ CALLFRAME* ChangeDepth(int value, const char* name, bool nostackCutback, char* c
 		
 		frame->label = (char*)name;
 		frame->index = callindex; // debugging
-		frame->code = code;
+		frame->code = const_cast<char*>(code);
 		frame->heapstart = heapFree;
 		frame->rule = (currentRule) ? currentRule : (char*)"";
 		memcpy(&frame->arguments, nullArguments, sizeof(nullArguments));

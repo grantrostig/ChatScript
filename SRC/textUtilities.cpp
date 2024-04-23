@@ -451,7 +451,7 @@ char* UTF16_2_UTF8(char* in,bool withinquote)
 		return const_cast<char*>("\""); // left and right curly dq to normal dq
 	}
 	if (n == 22)  return const_cast<char*>("\\\""); // std ascii
-	if (n == 27)  return "\\'"; // std quote	if (n == 27)  return "'"; // std quote	if (n == 27)  return "\\'"; // std quote	if (n == 27)  return "'"; // std quote
+	if (n == 27)  return const_cast<char*>("\\'"); // std quote	if (n == 27)  return "'"; // std quote	if (n == 27)  return "\\'"; // std quote	if (n == 27)  return "'"; // std quote
 	if (n == 2013 || n == 2014)  // preserve m and n dash for now for regression test
 	{
 		return NULL; // decline to change
@@ -1545,7 +1545,7 @@ uint64 FindMiscValueByName(char* name)
 // BOOLEAN-STYLE QUESTIONS
 /////////////////////////////////////////////
 
-bool IsArithmeticOperator(char* word)
+bool IsArithmeticOperator(char const* word)
 {
 	word = SkipWhitespace(word);
 	char c = *word;
@@ -3078,20 +3078,20 @@ char* ReadFlags(char* ptr, uint64& flags, bool& bad, bool& response, bool factca
 	return  (!flags) ? start : ptr;
 }
 
-char* ReadInt(char* ptr, int& value)
+char* ReadInt(char const* ptr, int& value)
 {
 	ptr = SkipWhitespace(ptr);
 
 	value = 0;
-	if (!ptr || !*ptr) return ptr;
+	if (!ptr || !*ptr) return const_cast<char*>(ptr);
 	if (*ptr == '0' && (ptr[1] == 'x' || ptr[1] == 'X'))  // hex number
 	{
 		uint64 val;
 		ptr = ReadHex(ptr, val);
 		value = (int)val;
-		return ptr;
+		return const_cast<char*>(ptr);
 	}
-	char* original = ptr;
+	char* original = const_cast<char*>(ptr);
 	int sign = 1;
 	if (*ptr == '-')
 	{
@@ -3109,12 +3109,12 @@ char* ReadInt(char* ptr, int& value)
 			Bug(); // ReportBug((char*)"bad number %s\r\n", original);
 			while (*++ptr && *ptr != ' ');
 			value = 0;
-			return ptr;
+			return const_cast<char*>(ptr);
 		}
 	}
 	value *= sign;
 	if (*ptr) ++ptr; // skip trailing blank
-	return ptr;
+	return const_cast<char*>(ptr);
 }
 
 int64 atoi64(char* ptr)
@@ -3128,10 +3128,10 @@ char* ReadInt64(char const* ptr, int64& spot)
 {
 	ptr = SkipWhitespace(ptr);
 	spot = 0;
-	if (!ptr || !*ptr) return ptr;
+	if (!ptr || !*ptr) return const_cast<char*>(ptr);
 	if (*ptr == 'x') return ReadHex(ptr, (uint64&)spot);
 	if (*ptr == '0' && (ptr[1] == 'x' || ptr[1] == 'X')) return ReadHex(ptr, (uint64&)spot);
-	char* original = ptr;
+	char* original = const_cast<char*>(ptr);
 	int sign = 1;
 	if (*ptr == '-')
 	{
@@ -3155,18 +3155,18 @@ char* ReadInt64(char const* ptr, int64& spot)
 			Bug(); // ReportBug((char*)"bad number1 %s\r\n", original);
 			while (*++ptr && *ptr != ' ');
 			spot = 0;
-			return ptr;
+			return const_cast<char*>(ptr);
 		}
 	}
 	spot *= sign;
 	if (*ptr) ++ptr;	// skip trailing blank
-	return ptr;
+	return const_cast<char*>(ptr);
 }
 
-char* ReadHex(char* ptr, uint64& value)
+char* ReadHex(char const* ptr, uint64& value)
 {
 	ptr = SkipWhitespace(ptr);
-	if (!ptr || !*ptr) return ptr;
+	if (!ptr || !*ptr) return const_cast<char*>(ptr);
 	if (ptr[0] == 'x') ++ptr; // skip x
 	else if (ptr[1] == 'x' || ptr[1] == 'X') ptr += 2; // skip 0x
 	--ptr;
@@ -3180,7 +3180,7 @@ char* ReadHex(char* ptr, uint64& value)
 		value += (IsDigit(c)) ? (c - '0') : (10 + c - 'a');
 	}
 	if (*ptr) ++ptr;// align past trailing space
-	return ptr;
+	return const_cast<char*>(ptr);
 }
 
 void BOMAccess(int& BOMvalue, char& oldc, int& oldCurrentLine) // used to get/set file access- -1 BOMValue gets, other sets all
@@ -4835,9 +4835,9 @@ char* ReadCodeWord(const char* ptr, char* word, bool noquote, bool var, bool nol
 	}
 	return answer;
 }
-char* BalanceParen(char* ptr, bool within, bool wildcards) // text starting with ((unless within is true), find the closing ) and point to next item after
+char* BalanceParen(char const* ptr, bool within, bool wildcards) // text starting with ((unless within is true), find the closing ) and point to next item after
 {
-	char* start = ptr;
+	char* start = const_cast<char*>(ptr);
 	int paren = 0;
 	if (within) paren = 1; // function call or pattern (
 	--ptr;
@@ -4880,7 +4880,7 @@ char* BalanceParen(char* ptr, bool within, bool wildcards) // text starting with
 			break;
 		}
 	}
-	return ptr; //   return past end of data
+	return const_cast<char*>(ptr); //   return past end of data
 }
 
 char* SkipWhitespace(const char* ptr)
@@ -6777,7 +6777,7 @@ char* PartialLowerCopy(char* to, const char* from, int begin, int end)  	//exclu
 char* MakeLowerCopy(char* to, const char* from)
 {
 	if (!from) 
-		return "unknown";
+		return const_cast<char*>("unknown");
 	char* start = to;
 	while (*from)
 	{

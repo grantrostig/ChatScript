@@ -33,7 +33,7 @@ FunctionResult JSONFormatCode(char* buffer);
 FunctionResult JSONParseFileCode(char* buffer);
 char* jwritehierarchy(bool log, bool defaultZero, int depth, char* buffer, WORDP D, int subject, int nest);
 FunctionResult JSONObjectInsertCode(char* buffer) ;
-FunctionResult JSONVariableAssign(char* word,char* value, bool stripQuotes = true);
+FunctionResult JSONVariableAssign(char* word,char const* value, bool stripQuotes = true);
 FunctionResult JSONArrayInsertCode(char* buffer) ;
 FunctionResult JSONLabelCode(char* buffer) ;
 FunctionResult JSONUndecodeStringCode(char* buffer) ;

@@ -21,7 +21,7 @@ char caller[MAX_WORD_SIZE];
 char callee[MAX_WORD_SIZE];
 char* userDataBase = NULL;                // current write user record base
 
-static char* saveVersion = "jul2116";	// format of save file
+static char* saveVersion = const_cast<char*>("jul2116");	// format of save file
 
 unsigned int userFirstLine = 0;	// start volley of current conversation
 uint64 setControl = 0;	// which sets should be saved with user
@@ -85,12 +85,12 @@ bool Login(char const* user,char const* usee,char const* ip,char const* incoming
 
 	if (incoming[0] && incoming[1] == '#' && incoming[2] == '!') // naming bot to talk to- and whether to initiate or not - e.g. #!Rosette#my message
 	{
-		char* next = strchr(incoming + 3, '#');
+		char* next = strchr(const_cast<char*>(incoming) + 3, '#');
 		if (next)
 		{
 			*next = 0;
 			MakeLowerCopy(callee, incoming + 3); // override the bot name (including future defaults if such)
-			memcpy(incoming + 1, next + 1,strlen(next));	// the actual message.
+			memcpy(const_cast<char*>(incoming) + 1, next + 1,strlen(next));	// the actual message.
 		}
 	}
 
@@ -526,7 +526,7 @@ char* WriteUserVariables(char* ptr,bool sharefile, bool compiled,char* saveJSON)
 				sprintf(word, (char*)"%u", (unsigned int)timing);
 				val = word;
 			}
-			if (!val) val = ""; // for null variables being marked as traced
+			if (!val) val = const_cast<char*>(""); // for null variables being marked as traced
 			if (D->internalBits & MACRO_TRACE) sprintf(ptr,(char*)"%s=`%s\r\n",D->word,SafeLine(val));
 			else sprintf(ptr,(char*)"%s=%s\r\n",D->word,SafeLine(val));
 			
@@ -921,7 +921,7 @@ void GetUserData(ResetMode& buildReset,char const* incoming)
 	loading = true;
 	// accept a user topic file erase command
 	char* x = NULL;
-	if (*erasename && incoming) x = strstr(incoming, erasename);
+	if (*erasename && incoming) x = strstr(const_cast<char*>(incoming), erasename);
 	if (x)
 	{
 		buildReset = FULL_RESET;

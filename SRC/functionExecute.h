@@ -148,13 +148,13 @@ FunctionResult WebsocketCloseCode(char const* buffer);
 FunctionResult InitWinsock();
 #endif
 
-CALLFRAME* ChangeDepth(int value, const char* where, bool nostackCutboack = false, char* code = NULL);
+CALLFRAME* ChangeDepth(int value, const char* where, bool nostackCutboack = false, char const* code = NULL);
 FunctionResult GambitCode(char* buffer);
 FunctionResult RunJavaScript(char* definition, char* buffer,unsigned int args);
 void DeletePermanentJavaScript();
 void DeleteTransientJavaScript();
 void ShowChangedVariablesList();
-HEAPREF MakeFunctionDefinition(char* data);
+HEAPREF MakeFunctionDefinition(char const* data);
 unsigned int MACRO_ARGUMENT_COUNT(unsigned char* defn);
 FunctionResult FindRuleCode1(char* buffer, char* word);
 int GetFnArgCount(char* func,int& flags);
@@ -175,11 +175,11 @@ unsigned char* FindAppropriateDefinition(WORDP D, FunctionResult& result,bool fi
 void ResetReuseSafety();
 unsigned char* GetDefinition(WORDP D);
 void InitFunctionSystem(); 
-char* DoFunction(char* name, char* ptr, char* buffer,FunctionResult &result);
+char* DoFunction(char* name, char const* ptr, char* buffer,FunctionResult &result);
 void DumpFunctions();
 unsigned int Callback(WORDP D,char const* arguments,bool boot,bool mainoutput = false);
 void SaveMark(char* buffer,unsigned int iterator);
-FunctionResult RegularReuse(int topic, int id, char* rule,char* buffer,char* arg3,bool crosstopic);
+FunctionResult RegularReuse(int topic, int id, char* rule,char* buffer,char const* arg3,bool crosstopic);
 void UpdateTrace(char* value);
 FunctionResult InternalCall(char const* name, EXECUTEPTR fn, char const* arg1, char const* arg2, char const* arg3, char* buffer, char* arg4 = NULL, char* arg5 = NULL);
 
@@ -197,7 +197,7 @@ FunctionResult FLR(char* buffer,char* which);
 void ResetUser(char* input);
 bool RuleTest(char* rule);
 extern int debugValue;
-FunctionResult DebugCode(char* buffer);
+FunctionResult DebugCode(char const* buffer);
 FunctionResult IdentifyCode(char* buffer);
 FunctionResult MatchCode(char* buffer);
 FunctionResult CompileOutputCode(char* buffer); // for unit tests
