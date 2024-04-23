@@ -5619,7 +5619,7 @@ static void SetJumpOffsets(char* data) // store jump offset for each rule
     }
  }
 
-static char* ReadKeyword(char* word,char* ptr,bool& notted, int& quoted,MEANING concept,uint64 type,bool ignoreSpell,unsigned int build,bool duplicate,bool startOnly,bool endOnly,bool emoticon)
+static char* ReadKeyword(char* word,char* ptr,bool& notted, int& quoted,MEANING memberConcept,uint64 type,bool ignoreSpell,unsigned int build,bool duplicate,bool startOnly,bool endOnly,bool emoticon)
 {
 	if (emoticon) type |= EMOJI;
 	// read the keywords zone of the concept
@@ -5631,17 +5631,17 @@ static char* ReadKeyword(char* word,char* ptr,bool& notted, int& quoted,MEANING 
 	{
 		case '!':	// excuded keyword
 			if (len == 1) 
-                BADSCRIPT((char*)"CONCEPT-5 Must attach ! to keyword in %s\r\n",Meaning2Word(concept)->word);
-			if (word[1] == '!') BADSCRIPT((char*)"CONCEPT-5 Cannot use ! after !! in %s\r\n", Meaning2Word(concept)->word);
+                BADSCRIPT((char*)"CONCEPT-5 Must attach ! to keyword in %s\r\n",Meaning2Word(memberConcept)->word);
+			if (word[1] == '!') BADSCRIPT((char*)"CONCEPT-5 Cannot use ! after !! in %s\r\n", Meaning2Word(memberConcept)->word);
 			notted = true;
 			ptr -= len;
 			if (*ptr == '!') ++ptr;
 			break;
 		case '\'': 
-			if (len == 1) BADSCRIPT((char*)"CONCEPT-6 Must attach ' to keyword in %s\r\n",Meaning2Word(concept)->word);
+			if (len == 1) BADSCRIPT((char*)"CONCEPT-6 Must attach ' to keyword in %s\r\n",Meaning2Word(memberConcept)->word);
 			if (word[1] == '\'')
 			{
-				if (word[2] == '\'') BADSCRIPT((char*)"CONCEPT-5 Cannot use ' after ' in %s\r\n", Meaning2Word(concept)->word);
+				if (word[2] == '\'') BADSCRIPT((char*)"CONCEPT-5 Cannot use ' after ' in %s\r\n", Meaning2Word(memberConcept)->word);
 				quoted = 2;
 			}
 			else quoted = 1;	//   since we emitted the ', we MUST emit the next token
@@ -5650,7 +5650,7 @@ static char* ReadKeyword(char* word,char* ptr,bool& notted, int& quoted,MEANING 
 			if (*ptr == '\'') ++ptr;
 			break;
 		default:
-			if (*word == USERVAR_PREFIX || (*word == '_' && IsDigit(word[1])) || (*word == SYSVAR_PREFIX && IsLowerCase(word[1]) && IsLowerCase(word[2]))) BADSCRIPT((char*)"CONCEPT-? Cannot use $var or _var or %var as a keyword in %s\r\n",Meaning2Word(concept)->word);
+			if (*word == USERVAR_PREFIX || (*word == '_' && IsDigit(word[1])) || (*word == SYSVAR_PREFIX && IsLowerCase(word[1]) && IsLowerCase(word[2]))) BADSCRIPT((char*)"CONCEPT-? Cannot use $var or _var or %var as a keyword in %s\r\n",Meaning2Word(memberConcept)->word);
 			if (*word == '~') MakeLowerCase(word); //   sets are always lower case
 			at = strchr(word + 1, '~'); //   wordnet meaning request, confirm definition exists
 			if ((*word != '"' && *word != '\'') && at && stricmp(current_language, "english") &&  at[-1] != '*' && IsDigit(at[1])) *at = 0;
@@ -5669,7 +5669,7 @@ static char* ReadKeyword(char* word,char* ptr,bool& notted, int& quoted,MEANING 
                 ReadPattern(word+1, NULL, data, false, false); //   back up and pass in the paren for pattern
                 FreeBuffer();
                 M = MakeMeaning(StoreWord(startData, AS_IS));
-                CreateFact(M, conceptPattern, concept, flags);
+                CreateFact(M, conceptPattern, memberConcept, flags);
                 return ptr;
             }
             else if (at) //   wordnet meaning request, confirm definition exists
@@ -5712,7 +5712,7 @@ static char* ReadKeyword(char* word,char* ptr,bool& notted, int& quoted,MEANING 
 
 				if (*D->word == '~') // concept
 				{
-					if (M == concept) 
+					if (M == memberConcept)
 						BADSCRIPT((char*)"CONCEPT-8 Cannot include topic into self - %s\r\n",D->word);
 					CheckSetOrTopic(D->word);
 				}
@@ -5731,16 +5731,16 @@ static char* ReadKeyword(char* word,char* ptr,bool& notted, int& quoted,MEANING 
             if (startOnly) flags |= START_ONLY;
             if (endOnly) flags |= END_ONLY;
 			if (build & BUILD1) flags |= FACTBUILD1; // concept facts from build 1
-			FACT* F = CreateFact(M,(notted) ? Mexclude : Mmember,concept, flags); 
+			FACT* F = CreateFact(M,(notted) ? Mexclude : Mmember, memberConcept, flags);
 			quoted = 0;
 			notted = false;
 	} 
 	return ptr;
 }
 
-bool HasBotMember(WORDP concept, uint64 id)
+bool HasBotMember(WORDP memberConcept, uint64 id)
 {
-    FACT* F = GetObjectHead(concept);
+    FACT* F = GetObjectHead(memberConcept);
     while (F)
     {
         if (F->verb == Mmember) // manual ValidMemberFact(F) because bot id is passed in
@@ -6501,7 +6501,7 @@ static char* ReadConcept(char* ptr, FILE* in,unsigned int build)
 {
 	char conceptName[MAX_WORD_SIZE];
 	*conceptName = 0;
-	MEANING concept = 0;
+	MEANING memberConcept = 0;
 	WORDP D = NULL;
 	bool ignoreSpell = false;
 	
@@ -6551,7 +6551,7 @@ static char* ReadConcept(char* ptr, FILE* in,unsigned int build)
 			WORDP alt = StoreWord(cumulate, AS_IS);
 			alt->internalBits |= BEEN_HERE; // has been defined
 
-			concept = MakeMeaning(D);
+			memberConcept = MakeMeaning(D);
 			sys = type = 0;
 			parenLevel = 0;
 			Log(USERLOG,"Reading concept %s\r\n",conceptName);
@@ -6669,7 +6669,7 @@ static char* ReadConcept(char* ptr, FILE* in,unsigned int build)
 				if (parenLevel < 0) BADSCRIPT((char*)"CONCEPT-6 Missing ( for concept definition %s\r\n",conceptName)
 				break;
 			default: 
-				 ptr = ReadKeyword(word,ptr,notted,quoted,concept,type,ignoreSpell,build,duplicate,startOnly,endOnly,emoticon);
+				 ptr = ReadKeyword(word,ptr,notted,quoted, memberConcept,type,ignoreSpell,build,duplicate,startOnly,endOnly,emoticon);
 		}
 		if (parenLevel == 0) break;
 
@@ -6853,12 +6853,12 @@ static void DoubleCheckDefinition(unsigned int build,char* topicfolder,char* bas
 		char* line = (char*)linex;
 		strcpy(currentFilename, filename);
 		currentFileLine = (int)(uint64)line;
-		char* concept = conceptData + 9;
-		char* botname = conceptData + 10 + strlen(concept);
+		char* memberConcept = conceptData + 9;
+		char* botname = conceptData + 10 + strlen(memberConcept);
 
-		WORDP D = FindWord((char*)concept);
+		WORDP D = FindWord((char*)memberConcept);
 		if (D && D->internalBits & TOPIC) continue;
-		WARNSCRIPT((char*)"Undefined concept %s in bot %s\r\n", concept, botname)
+		WARNSCRIPT((char*)"Undefined concept %s in bot %s\r\n", memberConcept, botname)
 	}
 	myBot = oldbot;
 }

@@ -4,7 +4,7 @@
 typedef struct InternationalPhones
 {
 	const char* countrydigits; 
-	const char* concept;
+	const char* phoneConcept;
 	const int countrycode;		
 	const int areacode;			
 	const int exchangecode; // variable digits counts are put here
@@ -108,7 +108,7 @@ static JapanCharInfo japanControlSet[] = // always change pattern and output
 typedef struct CURRENCYDECODE
 {
 	int word; // word index of currency abbrev
-	int concept;	// word index of concept to mark it
+	int currencyConcept;	// word index of concept to mark it
 } CURRENCYDECODE;
 
 static CURRENCYDECODE* currencies[MAX_MULTIDICT];
@@ -1653,7 +1653,7 @@ char* IsTextCurrency(char* ptr, char* end)
 		char* w = Index2Heap(index);
 		if (!strnicmp(ptr, w, len))
 		{
-			if (ptr[len] == 0 || IsDigit(ptr[len]) || IsNonDigitNumberStarter(ptr[len])) return Index2Heap(currencies[languageIndex][i].concept);  // a match 
+			if (ptr[len] == 0 || IsDigit(ptr[len]) || IsNonDigitNumberStarter(ptr[len])) return Index2Heap(currencies[languageIndex][i].currencyConcept);  // a match 
 		}
 	}
 	return NULL;
@@ -2389,7 +2389,7 @@ The country code, province or region code, prefix, and line number are separated
 				int exchangecode = size - phoneData[dindex].subscriber - phoneData[dindex].areacode - phoneData[dindex].countrycode;
 				FixNumber(number + index, renumber, phoneData[dindex].countrycode, phoneData[dindex].areacode, exchangecode, phoneData[dindex].subscriber);
 				WORDP D = StoreWord(renumber, AS_IS);
-				MarkWordHit(0, MakeMeaning(D), StoreWord(phoneData[dindex].concept, AS_IS), 0, i + 1, start);
+				MarkWordHit(0, MakeMeaning(D), StoreWord(phoneData[dindex].phoneConcept, AS_IS), 0, i + 1, start);
 				break;
 			}
 		}
@@ -3929,7 +3929,7 @@ char* SkipOOB(char* buffer)
 		bool quote = false;
 		int blocklevel = 0;
 		char c;
-		int concept = 0;
+		int memberConcept = 0;
 		while ((c = *++at))
 		{
 			if (full)
@@ -3958,10 +3958,10 @@ char* SkipOOB(char* buffer)
 				{
 					if (!strnicmp(at,"{\"concept", 9))
 					{
-						concept = bracket + 1; // ignore all within []
+						memberConcept = bracket + 1; // ignore all within []
 					}
 				}
-				if (traceskip && !concept && curly <= 6 && !blocklevel)
+				if (traceskip && !memberConcept && curly <= 6 && !blocklevel)
 				{
 					strncpy(data, at, 40);
 					data[40] = 0;
@@ -3972,7 +3972,7 @@ char* SkipOOB(char* buffer)
 			}
 			else if (c == ',') // only top levels, not deep in patterns
 			{
-				if (traceskip &&  !concept && curly <= 6 && !blocklevel)
+				if (traceskip &&  !memberConcept && curly <= 6 && !blocklevel)
 				{
 					strncpy(data, at, 40);
 					data[40] = 0;
@@ -3989,7 +3989,7 @@ char* SkipOOB(char* buffer)
 			else if (c == '[')
 			{
 				++bracket;
-				if (traceskip && !concept && bracket <= 6 && !blocklevel)
+				if (traceskip && !memberConcept && bracket <= 6 && !blocklevel)
 				{
 					strncpy(data, at, 40);
 					data[40] = 0;
@@ -4000,7 +4000,7 @@ char* SkipOOB(char* buffer)
 			}
 			else if (c == ']')
 			{
-				if (bracket == concept) concept = 0; // turn off ignore
+				if (bracket == memberConcept) memberConcept = 0; // turn off ignore
 				--bracket;
 				if (blocklevel > (curly + bracket)) blocklevel = 0;
 				if (bracket == 0 && curly == 0)

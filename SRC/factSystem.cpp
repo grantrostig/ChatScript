@@ -1401,11 +1401,11 @@ bool ImportFacts(char* buffer, char* name, char* set, char* erase, char* transie
 	return true;
 }
 
-int FindEarliestMember(WORDP concept, char* word)
+int FindEarliestMember(WORDP memberConcept, char* word)
 { // need to reverse all members
 	char* limit;
 	FACT** stack = (FACT**)InfiniteStack(limit, "findearliestmember");
-	FACT* F = GetObjectNondeadHead(concept);
+	FACT* F = GetObjectNondeadHead(memberConcept);
 	int index = 0;
 	while (F) // stack object key data
 	{
@@ -1425,11 +1425,11 @@ int FindEarliestMember(WORDP concept, char* word)
 	return -1;
 }
 
-int FindRecentMember(WORDP concept,char* word)
+int FindRecentMember(WORDP memberConcept,char* word)
 {
 	unsigned int count = 0;
 	MEANING M = MakeMeaning(FindWord(word, 0, PRIMARY_CASE_ALLOWED));
-	FACT* F = GetObjectNondeadHead(concept);
+	FACT* F = GetObjectNondeadHead(memberConcept);
 	while (F)
 	{
 		if (F->verb == Mmember && (F->subject & MEANING_BASE) == M) return count;
@@ -1439,11 +1439,11 @@ int FindRecentMember(WORDP concept,char* word)
 	return -1; // not found
 }
 
-WORDP NthEarliestMember(WORDP concept, int n)
+WORDP NthEarliestMember(WORDP memberConcept, int n)
 { // need to reverse all members
 	char* limit;
 	FACT** stack = (FACT**)InfiniteStack(limit, "nthearliestmember");
-	FACT* F = GetObjectNondeadHead(concept);
+	FACT* F = GetObjectNondeadHead(memberConcept);
 	int index = 0;
 	while (F) // stack object key data
 	{
@@ -1463,10 +1463,10 @@ WORDP NthEarliestMember(WORDP concept, int n)
 	return NULL;
 }
 
-WORDP NthRecentMember(WORDP concept, int n)
+WORDP NthRecentMember(WORDP memberConcept, int n)
 {
 	unsigned int count = 0;
-	FACT* F = GetObjectNondeadHead(concept);
+	FACT* F = GetObjectNondeadHead(memberConcept);
 	while (F)
 	{
 		if (F->verb == Mmember) --n;

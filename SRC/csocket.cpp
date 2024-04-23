@@ -121,15 +121,15 @@ void GetPrimaryIP(char* buffer)
 //   SocketException Code
 
 SocketException::SocketException(const string &message, bool inclSysMsg)
-throw() : userMessage(message) {
+noexcept : userMessage(message) {
 	if (inclSysMsg) {
 		userMessage.append((char*)": ");
 		userMessage.append(strerror(errno));
 	}
 }
 
-SocketException::~SocketException() throw() {}
-const char *SocketException::what() const throw() { return userMessage.c_str(); }
+SocketException::~SocketException() noexcept {}
+const char *SocketException::what() const noexcept { return userMessage.c_str(); }
 
 //   Function to fill in address structure given an address and port
 static void fillAddr(const string &address, unsigned short myport, sockaddr_in &addr) {

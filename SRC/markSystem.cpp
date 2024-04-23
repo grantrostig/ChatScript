@@ -636,14 +636,14 @@ static void ProcessPendingConcepts()
         uint64 Fx;
         startList = UnpackHeapval(startList, Fx, start,end);
         FACT* F = (FACT*)Index2Fact((unsigned int)Fx);
-        WORDP concept = NULL; // set we want to trigger
+        WORDP memberConcept = NULL; // set we want to trigger
         while (F) // will be NULL if we have already finished with it
         {
             // expect exit here because writing a concept with NO members is nuts
             if (F->verb != Mexclude) break; // ran out of set restrictions 
 
             // before we can trigger this set membership
-            concept = Meaning2Word(F->object);
+			memberConcept = Meaning2Word(F->object);
             if (ProcessPendingFact(F, (unsigned int)start, (unsigned int)end)) // failed 
             {
                 currentEntry[1] = 0; // kill fact use
@@ -658,7 +658,7 @@ static void ProcessPendingConcepts()
         if (!changed && F && F->verb != Mexclude)
         {
             TraceHierarchy(F,"resume");
-            if (MarkWordHit(4, EXACTNOTSET, concept, 0, (int)start, (int)end)) // new ref added
+            if (MarkWordHit(4, EXACTNOTSET, memberConcept, 0, (int)start, (int)end)) // new ref added
             {
                 if (MarkSetPath(4 + 1, EXACTNOTSET, F->object, (int)start, (int)end, 4 + 1, FIXED) != -1) changed = true; // someone marked
             }
@@ -759,8 +759,8 @@ static int MarkSetPath(int depth,int exactWord,MEANING M, unsigned int start, un
 
 		// ~concept members and word equivalent
         if (trace & TRACE_HIERARCHY) TraceHierarchy(F,"");
-        WORDP concept = Meaning2Word(F->object);
-        if (concept->internalBits & OVERRIDE_CONCEPT) // override by ^testpattern, is this legal fact?
+        WORDP memberConcept = Meaning2Word(F->object);
+        if (memberConcept->internalBits & OVERRIDE_CONCEPT) // override by ^testpattern, is this legal fact?
         {
 			if (!(F->flags & OVERRIDE_MEMBER_FACT)) break; // pretend he and earlier facts doesnt exist
         }
@@ -806,10 +806,10 @@ static int MarkSetPath(int depth,int exactWord,MEANING M, unsigned int start, un
 					if (trace & TRACE_HIERARCHY) TraceHierarchy(F, "");
 				}
 				// concept might not be concept if member is to a word, not a concept
-				else if (*concept->word == '~' && WhereWordHit(concept, start) >= end) mark = false; // already marked this set
+				else if (*memberConcept->word == '~' && WhereWordHit(memberConcept, start) >= end) mark = false; // already marked this set
 				else  //does set has some members it does not want
 				{
-					FACT* G = GetObjectNondeadHead(concept);
+					FACT* G = GetObjectNondeadHead(memberConcept);
 					while (G)
 					{
                         // all simple excludes will be first
@@ -846,7 +846,7 @@ static int MarkSetPath(int depth,int exactWord,MEANING M, unsigned int start, un
 
 				if (mark)
 				{
-					if (MarkWordHit(depth, exactWord, concept, index,start, end)) // new ref added
+					if (MarkWordHit(depth, exactWord, memberConcept, index,start, end)) // new ref added
 					{
 						if (MarkSetPath(depth+1, exactWord, F->object, start, end, level + 1, kind) != -1) result = 1; // someone marked
 					}

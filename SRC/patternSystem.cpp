@@ -2114,10 +2114,10 @@ void ExecuteConceptPatterns(FACT* specificPattern)
     while (F)
     {
         MEANING conceptMeaning = F->object;
-        WORDP concept = Meaning2Word(F->object);
+        WORDP memberConcept = Meaning2Word(F->object);
         char* pattern = Meaning2Word(F->subject)->word;
         F = (specificPattern ? NULL : GetVerbNondeadNext(F));
-        if (concept == lastMatchedConcept) continue; // one match per
+        if (memberConcept == lastMatchedConcept) continue; // one match per
 
         // all patterns here have been compiled, skip compilation mark
         ++pattern;
@@ -2141,7 +2141,7 @@ void ExecuteConceptPatterns(FACT* specificPattern)
         ShowMatchResult(!match ? FAILRULE_BIT : NOPROBLEM_BIT, pattern, NULL, 0);
         if (match)
         {
-            lastMatchedConcept = concept;
+            lastMatchedConcept = memberConcept;
             // Mark specific thing else using returned start
             if (wildcardIndex) // wildcard assigned, use that
             {
@@ -2157,10 +2157,10 @@ void ExecuteConceptPatterns(FACT* specificPattern)
                     Log(USERLOG,"Concept Patterns:\r\n");
                     hasConceptPattern = true;
                 }
-                Log(USERLOG,"mark  @word %s %d-%d ", concept->word, start, end);
+                Log(USERLOG,"mark  @word %s %d-%d ", memberConcept->word, start, end);
             }
             MarkMeaningAndImplications(0, 0, conceptMeaning, start, end, FIXED, false, false);
-            if (*concept->word != '~') Add2ConceptTopicList(concepts, concept, start, end, true); // add ordinary word to concept list directly as WordHit will not store anything but concepts
+            if (*memberConcept->word != '~') Add2ConceptTopicList(concepts, memberConcept, start, end, true); // add ordinary word to concept list directly as WordHit will not store anything but concepts
 
             if (patternRetry)
             {

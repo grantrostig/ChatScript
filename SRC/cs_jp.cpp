@@ -67,21 +67,21 @@ void MarkJapaneseTags(int i, char* testDictionary)
         char* b = pos + 1;
         char* hyphen = strchr(b, '-');
         if (hyphen) *hyphen = 0;
-        if (!strcmp(b, u8"代名詞"))
+        if (!strcmp(b, reinterpret_cast<char const*>(u8"代名詞")))
             finalPosValues[i] |= PRONOUN_BITS;
-        else if (!strcmp(b, u8"記号")) {}// symbol
-        else if (!strcmp(b, u8"助詞")) {}// particle 
-        else if (!strcmp(b, u8"形容詞")) 
+        else if (!strcmp(b, reinterpret_cast<char const*>(u8"記号"))) {}// symbol
+        else if (!strcmp(b, reinterpret_cast<char const*>(u8"助詞"))) {}// particle 
+        else if (!strcmp(b, reinterpret_cast<char const*>(u8"形容詞")))
             finalPosValues[i] |= ADJECTIVE;
-        else if (!strcmp(b, u8"副詞"))
+        else if (!strcmp(b, reinterpret_cast<char const*>(u8"副詞")))
             finalPosValues[i] |= ADVERB;
-        else if (!strcmp(b, u8"助動詞"))
+        else if (!strcmp(b, reinterpret_cast<char const*>(u8"助動詞")))
             finalPosValues[i] |= AUX_VERB;
-        else if (!strcmp(b, u8"動詞"))
+        else if (!strcmp(b, reinterpret_cast<char const*>(u8"動詞")))
             finalPosValues[i] |= VERB;
-        else if (!strcmp(b, u8"名詞"))
+        else if (!strcmp(b, reinterpret_cast<char const*>(u8"名詞")))
             finalPosValues[i] |= NOUN_SINGULAR;
-        else if (!strcmp(b, u8"接続詞"))
+        else if (!strcmp(b, reinterpret_cast<char const*>(u8"接続詞")))
             finalPosValues[i] |= CONJUNCTION;
         else
         { // unknown tag

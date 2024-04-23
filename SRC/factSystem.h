@@ -71,10 +71,10 @@ void UnweaveFactVerb(FACT* F);
 void UnweaveFactObject(FACT* F);
 FACT* EarliestFact(MEANING M);
 FACT* EarliestObjectFact(MEANING M);
-int FindRecentMember(WORDP concept, char* word);
-int FindEarliestMember(WORDP concept, char* word);
-WORDP NthEarliestMember(WORDP concept, int n);
-WORDP NthRecentMember(WORDP concept,  int n);
+int FindRecentMember(WORDP memberConcept, char* word);
+int FindEarliestMember(WORDP memberConcept, char* word);
+WORDP NthEarliestMember(WORDP memberConcept, int n);
+WORDP NthRecentMember(WORDP memberConcept,  int n);
 
 // fact system startup and shutdown
 void InitFacts();

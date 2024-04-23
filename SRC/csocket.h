@@ -77,18 +77,18 @@ public:
    *   @param incSysMsg true if system message (from strerror(errno))
    *   should be postfixed to the user provided message
    */
-  SocketException(const string &message, bool inclSysMsg = false) throw();
+  SocketException(const string &message, bool inclSysMsg = false) noexcept;
 
   /**
    *   Provided just to guarantee that no exceptions are thrown.
    */
-  ~SocketException() throw();
+  ~SocketException() noexcept;
 
   /**
    *   Get the exception message
    *   @return exception message
    */
-  const char *what() const throw();
+  const char *what() const noexcept;
 
 private:
   string userMessage;  //   Exception message

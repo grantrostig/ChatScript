@@ -1419,9 +1419,9 @@ static unsigned int ComputeSyllables(char* word)
 	return vowels;
 }
 
-static void RecurseMembers(char* concept)
+static void RecurseMembers(char* memberConcept)
 {
-	WORDP D = FindWord(concept);
+	WORDP D = FindWord(memberConcept);
 	FACT* F = GetObjectNondeadHead(D);
 	while (F)
 	{
@@ -9801,7 +9801,7 @@ static HEAPREF MakeVariables(MEANING array, bool needNL) // array of objects des
 	return variableChangedThreadlist;
 }
 
-static FunctionResult MakeConceptPattern(char* pattern, MEANING concept, MEANING conceptPattern)
+static FunctionResult MakeConceptPattern(char* pattern, MEANING memberConcept, MEANING conceptPattern)
 {
 	FunctionResult result = NOPROBLEM_BIT;
 	char* data = AllocateBuffer();
@@ -9843,7 +9843,7 @@ static FunctionResult MakeConceptPattern(char* pattern, MEANING concept, MEANING
 	EndScriptCompiler();
 
 	WORDP D = StoreWord(startData, AS_IS);
-	CreateFact(MakeMeaning(D), conceptPattern, concept, FACTTRANSIENT);
+	CreateFact(MakeMeaning(D), conceptPattern, memberConcept, FACTTRANSIENT);
 	RESTORESYSTEMSTATE()
 		FreeBuffer();
 	return result;
@@ -9960,7 +9960,7 @@ static FunctionResult MakeConcepts(bool needNL, MEANING array, HEAPREF & subs, H
 
 			bool spellfix = !stricmp(name, "~replace_spelling"); // replace: equivalent
 			conceptName->internalBits |= OVERRIDE_CONCEPT;
-			MEANING concept = MakeMeaning(conceptName);
+			MEANING memberConcept = MakeMeaning(conceptName);
 			MEANING conceptPattern = MakeMeaning(StoreWord("conceptPattern", AS_IS));
 			while (members) //  xxx member ~concept
 			{
@@ -10008,18 +10008,18 @@ static FunctionResult MakeConcepts(bool needNL, MEANING array, HEAPREF & subs, H
 					if (*safestart == '^') ++safestart;
 					size_t len = strlen(safestart);
 					safestart[len - 1] = 0;
-					if (MakeConceptPattern(safestart, concept, conceptPattern) == FAILRULE_BIT) return FAILRULE_BIT;
+					if (MakeConceptPattern(safestart, memberConcept, conceptPattern) == FAILRULE_BIT) return FAILRULE_BIT;
 					safestart[len - 1] = '"';
 					pattern = currentFact;
 				}
 				else if (*safestart == '(' && strchr(item, ')')) // pattern in  ()  -- skip over leading whitespace
 				{
-					if (MakeConceptPattern(safestart, concept, conceptPattern) == FAILRULE_BIT) return FAILRULE_BIT;
+					if (MakeConceptPattern(safestart, memberConcept, conceptPattern) == FAILRULE_BIT) return FAILRULE_BIT;
 					pattern = currentFact;
 				}
 				else if (*item == '^' && item[1] == '(') // compiled pattern
 				{
-					CreateFact(m, conceptPattern, concept, FACTTRANSIENT);
+					CreateFact(m, conceptPattern, memberConcept, FACTTRANSIENT);
 				}
 				else // simple member
 				{
@@ -10028,7 +10028,7 @@ static FunctionResult MakeConcepts(bool needNL, MEANING array, HEAPREF & subs, H
 						flags |= ORIGINAL_ONLY;
 						m = MakeMeaning(StoreWord(item +1, AS_IS));
 					}
-					CreateFastFact(m, Mmember, concept, flags);
+					CreateFastFact(m, Mmember, memberConcept, flags);
 				}
 
 				if (markConcepts)
@@ -10039,7 +10039,7 @@ static FunctionResult MakeConcepts(bool needNL, MEANING array, HEAPREF & subs, H
 						MARKDATA hitdata;
 						while (GetNextSpot(P, start,false,0,&hitdata))
 						{
-							MarkMeaningAndImplications(0, 0, concept, hitdata.start, hitdata.end, CANONICAL);
+							MarkMeaningAndImplications(0, 0, memberConcept, hitdata.start, hitdata.end, CANONICAL);
 							start = hitdata.start;
 						}
 					}
@@ -10590,7 +10590,7 @@ static void CreatePatternInternalConcepts(char* pattern)
 	if (!patternStart) return; // bad data
 
 	char word[MAX_WORD_SIZE];
-	MEANING concept = 0;
+	MEANING memberConcept = 0;
 	while (1)
 	{
 		pattern = ReadCompiledWord(pattern, word);
@@ -10599,7 +10599,7 @@ static void CreatePatternInternalConcepts(char* pattern)
 		{
 			char name[MAX_WORD_SIZE];
 			sprintf(name, "~3%05u", ++internalConceptIndex);
-			concept = MakeMeaning(StoreWord(name, AS_IS));
+			memberConcept = MakeMeaning(StoreWord(name, AS_IS));
 
 			// now revise pattern to use new name
 			char* x = patternStart;
@@ -10615,7 +10615,7 @@ static void CreatePatternInternalConcepts(char* pattern)
 				flags |= ORIGINAL_ONLY;
 			}
 			MEANING keyname = MakeMeaning(StoreWord(key, AS_IS));
-			CreateFact(keyname, Mmember, concept, flags);
+			CreateFact(keyname, Mmember, memberConcept, flags);
 		}
 	}
 	myBot = oldbot;

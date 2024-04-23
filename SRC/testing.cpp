@@ -9372,17 +9372,17 @@ static void C_CompileDP(char* input)
 static void C_AllMembers(char* input)
 {
 	MEANING memx = MakeMeaning(StoreWord((char*)"member"));
-	char concept[MAX_WORD_SIZE];
+	char memberConcept[MAX_WORD_SIZE];
 	outptr = FopenUTF8Write("TMP/tmp.txt");
-	char* ptr = ReadCompiledWord(input, concept);
-	WORDP D = FindWord(concept);
+	char* ptr = ReadCompiledWord(input, memberConcept);
+	WORDP D = FindWord(memberConcept);
 	WORDP* members = (WORDP*)mymalloc(150000);
 	if (!members) ReportBug("AllMembers mymalloc failed");
 	WORDP* base = members;
 	follown = 0;
 	if (!D)
 	{
-		printf("%s not found\r\n", concept);
+		printf("%s not found\r\n", memberConcept);
 		return;
 	}
 
@@ -12611,9 +12611,9 @@ static bool IsMemberSet(WORDP D, WORDP set)
 	return false;
 }
 
-static void C_CanonConcept(char* concept)
+static void C_CanonConcept(char* memberConcept)
 {
-	WORDP D = FindWord(concept);
+	WORDP D = FindWord(memberConcept);
 	if (!D) return;
 	FILE* out = FopenUTF8Write("tmp\\concept.txt");
 	if (!out) return;
