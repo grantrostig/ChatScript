@@ -442,15 +442,15 @@ char* UTF16_2_UTF8(char* in,bool withinquote)
 	int n = atoi(in + 1);
 	if (n == 2019 || n == 2018)
 	{
-		return "\'";// left and right curly ' to normal '
+		return const_cast<char*>("\'");// left and right curly ' to normal '
 	}
 	char d = in[4];
 	if (n == 201 && (d == 'c' || d == 'd' || d == 'C' || d == 'D'))
 	{
-		if (withinquote) return "\\\""; // escape it
-		return "\""; // left and right curly dq to normal dq
+		if (withinquote) return const_cast<char*>("\\\""); // escape it
+		return const_cast<char*>("\""); // left and right curly dq to normal dq
 	}
-	if (n == 22)  return "\\\""; // std ascii
+	if (n == 22)  return const_cast<char*>("\\\""); // std ascii
 	if (n == 27)  return "\\'"; // std quote	if (n == 27)  return "'"; // std quote	if (n == 27)  return "\\'"; // std quote	if (n == 27)  return "'"; // std quote
 	if (n == 2013 || n == 2014)  // preserve m and n dash for now for regression test
 	{
@@ -700,7 +700,7 @@ char* FindJMSeparator(char* ptr, char c)
 	return NULL;
 }
 
-void CopyParam(char* to, char* from, unsigned int limit)
+void CopyParam(char* to, char const* from, unsigned int limit)
 {
 	size_t len = strlen(from);
 	if (*from == '"')
@@ -2614,7 +2614,7 @@ void EraseCurrentInput()
 	if (startSupplementalInput) startSupplementalInput = (HEAPREF)((uint64*)startSupplementalInput)[0];
 }
 
-bool AddInput(char* buffer, int kind, bool clear)
+bool AddInput(char const* buffer, int kind, bool clear)
 { // add a potentially multi sentence input in front of current
 	if (clear) ClearSupplementalInput();
 	buffer = SkipWhitespace(buffer);
@@ -3124,7 +3124,7 @@ int64 atoi64(char* ptr)
 	return spot;
 }
 
-char* ReadInt64(char* ptr, int64& spot)
+char* ReadInt64(char const* ptr, int64& spot)
 {
 	ptr = SkipWhitespace(ptr);
 	spot = 0;

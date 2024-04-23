@@ -62,7 +62,7 @@ char* GetAdjectiveMost(char* word);
 char* GetAdverbMore(char* word);
 char* GetAdverbMost(char* word);
 void SetSentenceTense(unsigned int start,unsigned  int end);
-WORDP SuffixAdjust(char* word, int lenword, char* suffix, int lensuffix,uint64 bits = 0);
+WORDP SuffixAdjust(char* word, int lenword, char const* suffix, int lensuffix,uint64 bits = 0);
 uint64 ProbableAdjective(char* original, unsigned int len,uint64& expectedBase);
 uint64 ProbableAdverb(char* original, unsigned int len,uint64& expectedBase);
 uint64 ProbableNoun(char* original,unsigned int len);

@@ -665,7 +665,7 @@ static int64 ProcessNumber(int atloc, char* original, WORDP& revise, WORDP &entr
 		unsigned char* currency = GetCurrency((unsigned char*)copy, value);
         if (value && currency && currency > (unsigned char*)value) *currency = 0; // remove trailing currency
         
-        if (!value) value = "0"; // eg 100$% faulty number
+        if (!value) value = const_cast<char*>("0"); // eg 100$% faulty number
 
         int64 n = Convert2Integer(value, numberStyle);
         if (n == NOT_A_NUMBER) return 0; // not a number after all
@@ -2514,7 +2514,7 @@ char* GetPresentParticiple(char* word)
     return buffer; 
 }
 
-WORDP SuffixAdjust(char* word, int lenword, char* suffix, int lensuffix,uint64 bits)
+WORDP SuffixAdjust(char* word, int lenword, char const* suffix, int lensuffix,uint64 bits)
 {
 	char copy[MAX_WORD_SIZE];
 	WORDP D;

@@ -353,11 +353,11 @@ uint64 KnownSpanishUnaccented(char* original, WORDP& entry, uint64& sysflags)
 	while ((c = *++at)) // try single accented change
 	{
 		char* change = NULL;
-		if (c == 'a') change = "\xC3\xA1";
-		else if (c == 'e') change = "\xC3\xA9";
-		else if (c == 'i') change = "\xC3\xAD";
-		else if (c == 'o') change = "\xC3\xB3";
-		else if (c == 'u') change = "\xC3\xBA";
+		if (c == 'a') change = const_cast<char*>("\xC3\xA1");
+		else if (c == 'e') change = const_cast<char*>("\xC3\xA9");
+		else if (c == 'i') change = const_cast<char*>("\xC3\xAD");
+		else if (c == 'o') change = const_cast<char*>("\xC3\xB3");
+		else if (c == 'u') change = const_cast<char*>("\xC3\xBA");
 		if (change)
 		{
 			strcpy(copy, word);
@@ -377,8 +377,8 @@ uint64 KnownSpanishUnaccented(char* original, WORDP& entry, uint64& sysflags)
 	return 0;
 }
 
-static WORDP ConfirmSpanishInfinitive(char* stem, char* verbType, int stemLen, char* original, const char* suffix, char* rawlemma = NULL);
-static WORDP ConfirmSpanishInfinitive(char* stem, char* verbType, int stemLen, char* original, const char* suffix, char* rawlemma)
+static WORDP ConfirmSpanishInfinitive(char* stem, char const* verbType, int stemLen, char* original, const char* suffix, char* rawlemma = NULL);
+static WORDP ConfirmSpanishInfinitive(char* stem, char const* verbType, int stemLen, char* original, const char* suffix, char* rawlemma)
 {
 	char word[MAX_WORD_SIZE];
 	strcpy(word, stem);
@@ -428,7 +428,7 @@ static WORDP ConfirmSpanishInfinitive(char* stem, char* verbType, int stemLen, c
 	return NULL;
 }
 
-static uint64 FindSpanishInfinitive(char* original, const char* suffix, char* verbType, WORDP& entry, WORDP& canonical, uint64& sysflags)
+static uint64 FindSpanishInfinitive(char* original, const char* suffix, char const* verbType, WORDP& entry, WORDP& canonical, uint64& sysflags)
 {
 	// Infinitives always end in ar, er or ir added to the stem - verbType names this suffix. 
 	// If empty, means try all 3 types

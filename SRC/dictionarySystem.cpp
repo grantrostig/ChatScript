@@ -821,12 +821,12 @@ static const char* GetLanguage(WORDP D)
 	else return "unknown language";
 }
 
-bool SetLanguage(char* arg1)
+bool SetLanguage(char const* arg1)
 {
 	if (!arg1 || !*arg1) return false;
 	
 	char lang[100];
-	arg1 = TrimSpaces(arg1);
+	arg1 = TrimSpaces(const_cast<char*>(arg1));
 	MakeUpperCopy(lang, arg1);
 	if (!stricmp(lang, "UNIVERSAL"))
 	{
@@ -912,17 +912,17 @@ void WriteTextEntry(WORDP D,bool tmp)
 			if (!stricmp(canonical->word, RawCanonical(D)->word) && stricmp(canonical->word,D->word))
 			{
 				bool discard = false;
-				char* type = "";
+				char* type = const_cast<char*>("");
 				// no other meaning to worry about with this conjugation and we already know the lemma for it and can detect it
 				if (D->properties & (VERB_PRESENT | VERB_PRESENT_3PS | VERB_PAST | VERB_PAST_PARTICIPLE | VERB_PRESENT_PARTICIPLE)
 					&& !(D->properties & (NOUN | ADVERB | ADJECTIVE | PREPOSITION | CONJUNCTION))) {
 					discard = true;
-					type = "verb";
+					type = const_cast<char*>("verb");
 				}
 				else if (D->properties & NOUN_PLURAL && !(D->properties & (VERB | ADVERB | ADJECTIVE | PREPOSITION | CONJUNCTION)))
 				{
 					discard = true;
-					type = "noun";
+					type = const_cast<char*>("noun");
 				}
 				if (discard)
 				{
@@ -993,7 +993,7 @@ void WriteTextEntry(WORDP D,bool tmp)
 		else
 		{
 			char* gloss = GetGloss(D, i);
-			if (gloss == NULL) gloss = "";
+			if (gloss == NULL) gloss = const_cast<char*>("");
 			fprintf(out, (char*)"%s\r\n", gloss);
 		}
 	}
@@ -1361,7 +1361,7 @@ bool StricmpUTF(char* w1, char* w2, int len)
 	return *word1 || *word2;
 }
 
-int GetWords(char* word, WORDP* set, bool strictcase, bool allvalid)
+int GetWords(char const* word, WORDP* set, bool strictcase, bool allvalid)
 {
 	size_t len = strlen(word);
 	if (len >= MAX_WORD_SIZE) return 0;	// not legal
@@ -3382,7 +3382,7 @@ char* WriteMeaning(MEANING T, bool withPos, char* buf)
 	if (!D->word)
 	{
 		ReportBug("Missing word on D (T=%d)\r\n", T);
-		answer = "deadcow";
+		answer = const_cast<char*>("deadcow");
 	}
 	else answer = D->word; // additional data on T
 	if (!buf) buf = AllocateStack(answer, strlen(answer) + 20); // leave room and let it truncate somehow later
@@ -3843,7 +3843,7 @@ void ReadLemmas(const char* file, const char* layer)
 }
 
 
-void ReadAbbreviations(char* name)
+void ReadAbbreviations(char const* name)
 {
 	char file[SMALL_WORD_SIZE];
 	sprintf(file, (char*)"%s/%s/SUBSTITUTES/%s", livedataFolder, current_language, name);
@@ -4275,7 +4275,7 @@ static void ReadPosPatterns(char* file)
 		++tagRuleCount;
 		if (big)
 		{
-			commentsData[tagRuleCount] = " ";
+			commentsData[tagRuleCount] = const_cast<char*>(" ");
 			++tagRuleCount;		// double-size rule
 		}
 	}
@@ -4647,7 +4647,7 @@ void VerifyEntries(WORDP D, uint64 junk) // prove meanings have synset heads and
 
 char* WordWithLanguage(WORDP D)
 {
-	if (!D) return "";
+	if (!D) return const_cast<char*>("");
 	static char word[SMALL_WORD_SIZE];
 	unsigned int len = WORDLENGTH(D);
 	if (len > 50) len = 50;
@@ -4940,10 +4940,10 @@ void DumpDictionaryEntry(char* word, unsigned int limit)
 	char* old = (D <= dictionaryPreBuild[LAYER_0]) ? (char*)"old" : (char*)"";
 	if (D)
 	{
-			char* univ = "";
-			if (D->foreignFlags) univ = "(universal multi)";
-			else if (D->internalBits & UNIVERSAL_WORD) univ = "(universal)";
-			else if ( D->internalBits & IS_SUPERCEDED) univ = "(superceded)";
+			char* univ = const_cast<char*>("");
+			if (D->foreignFlags) univ = const_cast<char*>("(universal multi)");
+			else if (D->internalBits & UNIVERSAL_WORD) univ = const_cast<char*>("(universal)");
+			else if ( D->internalBits & IS_SUPERCEDED) univ = const_cast<char*>("(superceded)");
 			Log(USERLOG, "\r\n%s x%08x (%d): %s in %s %s\r\n", D->word, D, Word2Index(D), old, lang, univ);
 	}
 	else Log(USERLOG, "\r\n%s (unknown word in %s):\r\n", name, current_language);
@@ -5100,7 +5100,7 @@ void DumpDictionaryEntry(char* word, unsigned int limit)
 	if (D && D->internalBits & DO_PRIVATE)  Log(USERLOG, "do_private ");
 	if (D && D->internalBits & FUNCTION_NAME)
 	{
-		char* kind = "";
+		char* kind = const_cast<char*>("");
 
 		SystemFunctionInfo* info = NULL;
 		if (D->x.codeIndex)	info = &systemFunctionSet[D->x.codeIndex];	//   system function
@@ -5197,7 +5197,7 @@ void DumpDictionaryEntry(char* word, unsigned int limit)
 			F = GetSubjectNext(F);
 		}
 		gloss = GetGloss(E, Meaning2Index(master));
-		if (!gloss) gloss = "";
+		if (!gloss) gloss = const_cast<char*>("");
 		if (parent)
 		{
 			char mean[MAX_WORD_SIZE];
@@ -8210,7 +8210,7 @@ static void DeleteAllWords(WORDP D, uint64 junk)
 
 static void CheckShortFacts()
 {
-	char* name = "TOPIC/BUILD0/facts0.txt";
+	char* name = const_cast<char*>("TOPIC/BUILD0/facts0.txt");
 	StartFile("TOPIC/BUILD0/facts0.txt");
 	FILE* in = FopenReadWritten(name); //  fact files
 	if (!in)

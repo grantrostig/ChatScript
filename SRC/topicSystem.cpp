@@ -1666,7 +1666,7 @@ static FunctionResult FindTypedResponse(char type, char* buffer, unsigned int& i
 		return result;
 }
 
-bool CheckTopicTrace(char* name) // have not disabled this topic or function for tracing
+bool CheckTopicTrace(char const* name) // have not disabled this topic or function for tracing
 {
 	if (!name) name = GetTopicName(currentTopicID);
 	WORDP D = FindWord(name);

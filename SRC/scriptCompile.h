@@ -46,7 +46,7 @@ extern char* patternStarter;
 extern char* patternEnder;
 extern unsigned int supplementalColumn;
 void ScriptError();
-void EraseTopicFiles(unsigned int build,char* name);
+void EraseTopicFiles(unsigned int build,char const* name);
 void InitScriptSystem();
 void WriteCanon(char* word, char* canon,char* form = NULL);
 
@@ -55,7 +55,7 @@ void EndScriptCompiler();
 bool StartScriptCompiler(bool normal);
 
 #define BADSCRIPT(...) {ScriptError(); Log((compiling || csapicall == TEST_PATTERN || csapicall == TEST_OUTPUT) ? BADSCRIPTLOG : USERLOG , __VA_ARGS__); JumpBack();}
-void EraseTopicBin(unsigned int build, char* name);
+void EraseTopicBin(unsigned int build, char const* name);
 
 #ifndef DISCARDSCRIPTCOMPILER
 int ReadTopicFiles(char* name,unsigned int build, int spell);

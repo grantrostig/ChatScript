@@ -53,7 +53,7 @@ void SetWildCard(char* value,char* canonicalVale,const char* index,unsigned int 
 void SetWildCardGiven(unsigned int start, unsigned int end, bool inpattern, int index,MARKDATA* hitdata = NULL);
 void SetWildCardIndexStart(int);
 int GetWildcardID(char* x);
-void SetAPIVariable(WORDP D, char* value);
+void SetAPIVariable(WORDP D, char const* value);
 void ReadVariables(const char* name);
 void InitBotVariables(int argc, char** argv);
 
@@ -70,7 +70,7 @@ void SetBotVariable(char* word);
 void ShowChangedVariables();
 void DumpUserVariables(bool all);
 void SetWildCardNull();
-void PrepareVariableChange(WORDP D,char* word,bool init);
+void PrepareVariableChange(WORDP D,char const* word,bool init);
 
 // user variable accessors
 void ClearUserVariableSetFlags();
@@ -78,7 +78,7 @@ void ClearUserVariables(char* above = 0);
 void MigrateUserVariables();
 void RecoverUserVariables();
 char* GetUserVariable(const char* word, bool nojson = false);
-void SetUserVariable(const char* var, char* word, bool assignment = false,bool reuse = false);
+void SetUserVariable(const char* var, char const* word, bool assignment = false,bool reuse = false);
 FunctionResult Add2UserVariable(char* var, char* word,char* op,char* originalArg);
 
 char* PerformAssignment(char* word,char* ptr,char* buffer,FunctionResult& result,bool nojson = false);

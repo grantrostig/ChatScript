@@ -888,7 +888,7 @@ static void VerifyRegress(char* file)
 			*vinput = 0;
 			userFirstLine = volleyCount + 1;
 			*readBuffer = 0;
-			originalUserInput = "";
+			originalUserInput = const_cast<char*>("");
 			AddInput("", 0, true);
 			ProcessInput();
 			FinishVolley(buffer, NULL);
@@ -2145,7 +2145,7 @@ static void VerifyAccess(char* topic, char kind, char* prepassTopic) // prove pa
 			{
 				data = rejoinderTop;
 				id = rejoinderTopID;
-				output = " "; // rejoinders block each other whether or not they generate output,
+				output = const_cast<char*>(" "); // rejoinders block each other whether or not they generate output,
 							  // except BUG that sequence does not.
 				while (data < rule)
 				{
@@ -2885,7 +2885,7 @@ static void C_TestPatternInfo(char* file)
 		patternSize = 0;
 		maxPatternSize = 0;
 		maxPattern = NULL;
-		maxConcept = "";
+		maxConcept = const_cast<char*>("");
 		maxConceptValue = 0;
 		usesNL = false;
 		patternCount = 0;
@@ -2914,7 +2914,7 @@ static void C_TestPatternInfo(char* file)
 	Log(ECHOUSERLOG, "CS calls: %d\r\n", calls);
 }
 
-static void DictWrite1(char* file)
+static void DictWrite1(char const* file)
 {
 	char location[MAX_WORD_SIZE];
 	sprintf(location, "DICT/ENGLISH/%s.txt", file);
@@ -4016,7 +4016,7 @@ static void C_PennNoun(char* file)
 
 static void C_VerifyPos(char* file)
 {
-	if (!*file) file = "REGRESS/postest.txt";
+	if (!*file) file = const_cast<char*>("REGRESS/postest.txt");
 	FILE* in = FopenReadOnly(file);  // REGRESS/postest
 	if (!in) return;
 
@@ -4107,7 +4107,7 @@ static void C_VerifyPos(char* file)
 
 static void C_TimePos(char* file) // how many wps for pos tagging
 {
-	if (!*file) file = "RAWDICT/postiming.txt";
+	if (!*file) file = const_cast<char*>("RAWDICT/postiming.txt");
 	FILE* in = fopen(file, (char*)"rb");
 	if (!in) return;
 	prepareMode = POSTIME_MODE;
@@ -4133,7 +4133,7 @@ static void C_TimePos(char* file) // how many wps for pos tagging
 
 static void C_VerifySpell(char* file) // test spell checker against a file of entries  wrong-spell rightspell like livedata/spellfix.txt
 {
-	if (!*file) file = "LIVEDATA/ENGLISH/SUBSTITUTES/spellfix.txt";
+	if (!*file) file = const_cast<char*>("LIVEDATA/ENGLISH/SUBSTITUTES/spellfix.txt");
 	FILE* in = fopen(file, (char*)"rb");
 	if (!in) return;
 	unsigned int right = 0;
@@ -5390,7 +5390,7 @@ static void DrawDownHierarchy(MEANING T, unsigned int depth, unsigned int limit,
 
 		//   for the current T meaning
 		char* gloss = GetGloss(Meaning2Word(T), Meaning2Index(T));
-		if (!gloss) gloss = "";
+		if (!gloss) gloss = const_cast<char*>("");
 		if (depth++ == 0 && size)  Log(USERLOG, "\r\n<%s.%d => %s (%s)\r\n", D->word, k, WriteMeaning(T), gloss); //   header for this top level meaning is OUR entry and MASTER
 		int l = 0;
 		while (++l) //   find the children of the meaning of T
@@ -5406,7 +5406,7 @@ static void DrawDownHierarchy(MEANING T, unsigned int depth, unsigned int limit,
 			//   child and all syn names of child
 			for (unsigned int j = 0; j <= (depth * 2); ++j) Log(USERLOG, " ");
 			gloss = GetGloss(Meaning2Word(child), Meaning2Index(child));
-			if (!gloss) gloss = "";
+			if (!gloss) gloss = const_cast<char*>("");
 			Log(USERLOG, "%d. ", depth);
 			DrawSynsets(child);
 			Log(USERLOG, "(%s)\r\n", gloss);
@@ -5920,16 +5920,16 @@ static void C_MixedCase(char* input)
 				if (E->systemFlags & HAS_SUBSTITUTE) continue; // not real
 				Log(ECHOUSERLOG, "%s", D->word);
 				char* loc;
-				if (D <= dictionaryPreBuild[LAYER_0]) loc = "w";
-				else if (D->internalBits & BUILD0) loc = "0";
-				else if (D->internalBits & BUILD1) loc = "1";
-				else loc = "?";
+				if (D <= dictionaryPreBuild[LAYER_0]) loc = const_cast<char*>("w");
+				else if (D->internalBits & BUILD0) loc = const_cast<char*>("0");
+				else if (D->internalBits & BUILD1) loc = const_cast<char*>("1");
+				else loc = const_cast<char*>("?");
 				Log(ECHOUSERLOG, " (%s)", loc);
 				Log(ECHOUSERLOG, "    %s", E->word);
-				if (E <= dictionaryPreBuild[LAYER_0]) loc = "w";
-				else if (E->internalBits & BUILD0) loc = "0";
-				else if (E->internalBits & BUILD1) loc = "1";
-				else loc = "?";
+				if (E <= dictionaryPreBuild[LAYER_0]) loc = const_cast<char*>("w");
+				else if (E->internalBits & BUILD0) loc = const_cast<char*>("0");
+				else if (E->internalBits & BUILD1) loc = const_cast<char*>("1");
+				else loc = const_cast<char*>("?");
 				Log(ECHOUSERLOG, " (%s)", loc);
 				Log(ECHOUSERLOG, "\r\n");
 				++n;
@@ -6233,20 +6233,20 @@ static void C_CountWords(char* input)
 {
 	if (!stricmp(input, "all"))
 	{
-		C_CountWords("car");
-		C_CountWords("computer");
-		C_CountWords("legal");
-		C_CountWords("appraisals");
-		C_CountWords("consumer_electronics");
-		C_CountWords("business_and_finance_homework");
-		C_CountWords("home_improvement");
-		C_CountWords("medical");
-		C_CountWords("boat");
-		C_CountWords("tax");
-		C_CountWords("heavy_equipment");
-		C_CountWords("general");
-		C_CountWords("engineering");
-		C_CountWords("homework");
+		C_CountWords(const_cast<char*>("car"));
+		C_CountWords(const_cast<char*>("computer"));
+		C_CountWords(const_cast<char*>("legal"));
+		C_CountWords(const_cast<char*>("appraisals"));
+		C_CountWords(const_cast<char*>("consumer_electronics"));
+		C_CountWords(const_cast<char*>("business_and_finance_homework"));
+		C_CountWords(const_cast<char*>("home_improvement"));
+		C_CountWords(const_cast<char*>("medical"));
+		C_CountWords(const_cast<char*>("boat"));
+		C_CountWords(const_cast<char*>("tax"));
+		C_CountWords(const_cast<char*>("heavy_equipment"));
+		C_CountWords(const_cast<char*>("general"));
+		C_CountWords(const_cast<char*>("engineering"));
+		C_CountWords(const_cast<char*>("homework"));
 		return;
 	}
 	char filename[MAX_WORD_SIZE];
@@ -6282,7 +6282,7 @@ static void C_CountWords(char* input)
 	printf("done %s\r\n", input);
 }
 
-static void C_CountCat1(char* input) // mark count of cats involved
+static void C_CountCat1(char const* input) // mark count of cats involved
 {
 	char filename[MAX_WORD_SIZE];
 	sprintf(filename, "mlcatcount/%s.txt", input);
@@ -6309,7 +6309,7 @@ static void C_CountCat1(char* input) // mark count of cats involved
 	FClose(in);
 }
 
-static void C_CountCat2(char* input)
+static void C_CountCat2(char const* input)
 {
 	// discard words going to 4 or more cats with 10 or more counts
 	char filename[MAX_WORD_SIZE];
@@ -7670,7 +7670,7 @@ void IngestFile(char* file, uint64 junk)
 		is->expectedOutput = CleanLogEntry(is, is->expectedOutput,true);
 		is->actualOutput = CleanLogEntry(is, is->actualOutBuffer,false);
 		
-		if (!is->actualOutput) is->actualOutput = "";
+		if (!is->actualOutput) is->actualOutput = const_cast<char*>("");
 		char* output1 = strstr(is->expectedOutput, "\"output\"");
 		if (!output1) output1 = strstr(is->expectedOutput, "\"transcript\""); // not json output
 		char* output2 = strstr(is->actualOutput, "\"output\"");
@@ -8124,7 +8124,7 @@ static char* MSTranslate(char* in, bool keyword)
 	//$_text = $_result[0].translations[0].text
 	//^ log(FILE LOGS / translate.txt from : $translatedlanguage $_input = > $_tolanguage $_text \n)
 
-	return " ";
+	return const_cast<char*>(" ");
 }
 
 char* SeparateTokens(char* start, char* token, char* ptr)
@@ -9329,15 +9329,15 @@ static void C_CompileDP(char* input)
 				sprintf(at, "\t");
 				at += 1;
 			}
-			char* kind = "unknown";
-			if (type == 7) kind = " ^sequence()"; // rejoinder
-			else if (type == 6) kind = " ^jump()"; // goto
-			else if (type == 5) kind = " ^call()"; // link
-			else if (type == 4) kind = " ^sequence()"; // queue
-			else if (type == 3) kind = " ^refine()"; // choice
-			else if (type == 2) kind = " "; // text
-			else if (type == 1) kind = " "; // startnode
-			else kind = "UNKNOWN KIND";
+			char* kind = const_cast<char*>("unknown");
+			if (type == 7) kind = const_cast<char*>(" ^sequence()"); // rejoinder
+			else if (type == 6) kind = const_cast<char*>(" ^jump()"); // goto
+			else if (type == 5) kind = const_cast<char*>(" ^call()"); // link
+			else if (type == 4) kind = const_cast<char*>(" ^sequence()"); // queue
+			else if (type == 3) kind = const_cast<char*>(" ^refine()"); // choice
+			else if (type == 2) kind = const_cast<char*>(" "); // text
+			else if (type == 1) kind = const_cast<char*>(" "); // startnode
+			else kind = const_cast<char*>("UNKNOWN KIND");
 			sprintf(at, "%c: %s () %s", 'a' + indentlevel, name, kind);
 			char* item = AllocateStack(data, 0);
 			line = AllocateHeapval(HV1_INT, line, (uint64)item); // actually stack ptr but we call it int
@@ -10874,9 +10874,9 @@ static void C_AllFacts(char* input)
 
 				++count;
 				char* f = WriteFact(F, true, word, false, true);
-				char* kind = "";
-				if (F->flags & FACTBOOT) kind = "boot";
-				else if (F->flags & FACTBUILD1) kind = "layer 1";
+				char* kind = const_cast<char*>("");
+				if (F->flags & FACTBOOT) kind = const_cast<char*>("boot");
+				else if (F->flags & FACTBUILD1) kind = const_cast<char*>("layer 1");
 				fprintf(out, (char*)"%s %s", kind, f);
 			}
 		}
@@ -12193,15 +12193,15 @@ static void Translate(char* msg, char* to, char* apkey)
 	sprintf(url, "https://translation.googleapis.com/language/translate/v2?target=%s&format=html&source=en&key=%s",
 		to, apkey);
 	sprintf(trandata, "{\"q\":\"%s\"}", msg);
-	char* header = "";
+	char* header = const_cast<char*>("");
 	// cheat  on internalcall coding
 	CALLFRAME* frame = GetCallFrame(globalDepth);
-	frame->arguments[1] = "transient direct";
-	frame->arguments[2] = "post";
+	frame->arguments[1] = const_cast<char*>("transient direct");
+	frame->arguments[2] = const_cast<char*>("post");
 	frame->arguments[3] = url;
 	frame->arguments[4] = trandata;
 	frame->arguments[5] = header;
-	frame->arguments[6] = "";
+	frame->arguments[6] = const_cast<char*>("");
 	*msg = 0;
 #ifndef DISCARDJSONOPEN
 	JSONOpenCode(msg);
@@ -12287,7 +12287,7 @@ static void C_TranslateConcept(char* input) // give the lang & filename to write
 #endif
 		char lang[100];
 	input = ReadCompiledWord(input, lang);
-	char* source = "concepts.top";
+	char* source = const_cast<char*>("concepts.top");
 	if (*lang == '~') // single concept named
 	{
 		WORDP X = FindWord(lang);
@@ -12299,35 +12299,35 @@ static void C_TranslateConcept(char* input) // give the lang & filename to write
 		FClose(FopenUTF8Write((char*)"cset.txt"));
 		Sortit(X->word, 1); /// 1 will be for 1line, otherwise take multiline as needed
 		input = ReadCompiledWord(input, lang);
-		source = "cset.txt";
+		source = const_cast<char*>("cset.txt");
 		if (!*lang) return; // just sort it. no translate
 	}
 
 	MakeUpperCase(lang);
 	char* into = NULL;
-	if (!stricmp(lang, "ARABIC")) into = "ar";
-	else if (!stricmp(lang, "BENGALI")) into = "bn";
-	else if (!stricmp(lang, "CHINESE")) into = "zh";
-	else if (!stricmp(lang, "CZECH")) into = "cs";
-	else if (!stricmp(lang, "DUTCH")) into = "nl";
-	else if (!stricmp(lang, "FINNISH")) into = "fi";
-	else if (!stricmp(lang, "FRENCH")) into = "fr";
-	else if (!stricmp(lang, "GERMAN")) into = "de";
-	else if (!stricmp(lang, "GREEK")) into = "el";
-	else if (!stricmp(lang, "HINDI")) into = "hi";
-	else if (!stricmp(lang, "HUNGARIAN")) into = "hu";
-	else if (!stricmp(lang, "ITALIAN")) into = "it";
-	else if (!stricmp(lang, "JAPANESE")) into = "ja";
-	else if (!stricmp(lang, "KOREAN")) into = "ko";
-	else if (!stricmp(lang, "MALAY")) into = "ms";
-	else if (!stricmp(lang, "NORWEGIAN")) into = "no";
-	else if (!stricmp(lang, "PUNJABI")) into = "pa";
-	else if (!stricmp(lang, "POLISH")) into = "pl";
-	else if (!stricmp(lang, "PORTUGUESE")) into = "pt";
-	else if (!stricmp(lang, "RUSSIAN")) into = "ru";
-	else if (!stricmp(lang, "SPANISH")) into = "es";
-	else if (!stricmp(lang, "SWEDISH")) into = "sv";
-	else if (!stricmp(lang, "TELUGU")) into = "te";
+	if (!stricmp(lang, "ARABIC")) into = const_cast<char*>("ar");
+	else if (!stricmp(lang, "BENGALI")) into = const_cast<char*>("bn");
+	else if (!stricmp(lang, "CHINESE")) into = const_cast<char*>("zh");
+	else if (!stricmp(lang, "CZECH")) into = const_cast<char*>("cs");
+	else if (!stricmp(lang, "DUTCH")) into = const_cast<char*>("nl");
+	else if (!stricmp(lang, "FINNISH")) into = const_cast<char*>("fi");
+	else if (!stricmp(lang, "FRENCH")) into = const_cast<char*>("fr");
+	else if (!stricmp(lang, "GERMAN")) into = const_cast<char*>("de");
+	else if (!stricmp(lang, "GREEK")) into = const_cast<char*>("el");
+	else if (!stricmp(lang, "HINDI")) into = const_cast<char*>("hi");
+	else if (!stricmp(lang, "HUNGARIAN")) into = const_cast<char*>("hu");
+	else if (!stricmp(lang, "ITALIAN")) into = const_cast<char*>("it");
+	else if (!stricmp(lang, "JAPANESE")) into = const_cast<char*>("ja");
+	else if (!stricmp(lang, "KOREAN")) into = const_cast<char*>("ko");
+	else if (!stricmp(lang, "MALAY")) into = const_cast<char*>("ms");
+	else if (!stricmp(lang, "NORWEGIAN")) into = const_cast<char*>("no");
+	else if (!stricmp(lang, "PUNJABI")) into = const_cast<char*>("pa");
+	else if (!stricmp(lang, "POLISH")) into = const_cast<char*>("pl");
+	else if (!stricmp(lang, "PORTUGUESE")) into = const_cast<char*>("pt");
+	else if (!stricmp(lang, "RUSSIAN")) into = const_cast<char*>("ru");
+	else if (!stricmp(lang, "SPANISH")) into = const_cast<char*>("es");
+	else if (!stricmp(lang, "SWEDISH")) into = const_cast<char*>("sv");
+	else if (!stricmp(lang, "TELUGU")) into = const_cast<char*>("te");
 
 	FILE* in = FopenReadOnly(source);
 	if (!in)
@@ -12656,15 +12656,15 @@ static FILE* abstractFile = NULL;
 
 static char* Indenter(char c)
 {
-	if (c == 't' || c == 'v' || c == '?' || c == 's' || c == 'u') return "";
-	if (c == 'a') return "    ";
-	if (c == 'b') return "        ";
-	if (c == 'c') return "            ";
-	if (c == 'd') return "                ";
-	if (c == 'e') return "                    ";
-	if (c == 'f') return "                         ";
-	if (c == 'g') return "                             ";
-	else return  "                             ";
+	if (c == 't' || c == 'v' || c == '?' || c == 's' || c == 'u') return const_cast<char*>("");
+	if (c == 'a') return const_cast<char*>("    ");
+	if (c == 'b') return const_cast<char*>("        ");
+	if (c == 'c') return const_cast<char*>("            ");
+	if (c == 'd') return const_cast<char*>("                ");
+	if (c == 'e') return const_cast<char*>("                    ");
+	if (c == 'f') return const_cast<char*>("                         ");
+	if (c == 'g') return const_cast<char*>("                             ");
+	else return  const_cast<char*>("                             ");
 }
 
 static void DoHeader(int count, char* basic, FILE* in, int id, unsigned int spelling, int ruleid, int rejoinderid, int topicID)
@@ -12992,8 +12992,8 @@ static void DisplayTopic(char* name, int topicID, int spelling)
 		int level = 0;
 		char levelMark[1000];
 		levelMark[0] = 0;
-		char* prior = "";
-		char* prior2 = "";
+		char* prior = const_cast<char*>("");
+		char* prior2 = const_cast<char*>("");
 		if (spelling & ABSTRACT_NOCODE) output = NULL;
 		while (output && *output && *output != ' ') // read output until end of rule
 		{
@@ -14234,7 +14234,7 @@ static void C_VerifyList(char* input) // leave * after args if no file
 
 static void C_VerifyRun(char* junk)
 {
-	if (!*junk) junk = "tmp/verifyinput.txt"; // default verifylist location
+	if (!*junk) junk = const_cast<char*>("tmp/verifyinput.txt"); // default verifylist location
 	allNoStay = true;
 	priortrace = trace;
 	strcpy(priorLogin, loginID);
@@ -14302,7 +14302,7 @@ static void C_VerifyMatch(char* input)
 	if (at) ReadToken(at + 5, filename);
 
 	char* file = filename;
-	if (!*filename) file = "USERS/log-verifier.txt";
+	if (!*filename) file = const_cast<char*>("USERS/log-verifier.txt");
 	FILE* in = FopenReadOnly(file);
 	if (!in)
 	{
@@ -14777,7 +14777,7 @@ static void TrimIt(char* name, uint64 flag)
 		output = SkipWhitespace(output);  // start of output
 
 		char* when = strstr(output, (char*)"When:");
-		char* why = "";
+		char* why = const_cast<char*>("");
 		if (when)
 		{
 			*when = 0;	// end of output
@@ -14789,7 +14789,7 @@ static void TrimIt(char* name, uint64 flag)
 				*why = 0;	// end of datestamp
 				why += 4;  // beginnings of whys
 			}
-			else why = "";
+			else why = const_cast<char*>("");
 		}
 
 		// remove our internal reply markers
@@ -14882,7 +14882,7 @@ static void TrimIt(char* name, uint64 flag)
 				char pattern[MAX_WORD_SIZE];
 				*pattern = 0;
 				if (rule) GetPattern(rule, NULL, pattern, true);
-				else rule = "-";
+				else rule = const_cast<char*>("-");
 				if (!*pattern) strcpy(pattern, (char*)"()"); // gambits for example
 				if (start) start = false;
 				else fprintf(out, (char*)"%s", (char*)"    ");
@@ -14949,17 +14949,17 @@ static void TrimIt(char* name, uint64 flag)
 			if (!header)
 			{
 				header = true;
-				char* type = " ";
-				if (flag == 0) type = "user->bot";
-				else if (flag == 1) type = "bot->user";
-				else if (flag == 2) type = "topic user->bot";
-				else if (flag == 3) type = "topic bot->user";
-				else if (flag == 4) type = "indent bot";
-				else if (flag == 5) type = "indent human";
-				else if (flag == 6) type = "user only";
-				else if (flag == 7) type = "tags verify user->bot";
-				else if (flag == 8) type = "indent bot + topic";
-				else if (flag == 11) type = "timeline";
+				char* type = const_cast<char*>(" ");
+				if (flag == 0) type = const_cast<char*>("user->bot");
+				else if (flag == 1) type = const_cast<char*>("bot->user");
+				else if (flag == 2) type = const_cast<char*>("topic user->bot");
+				else if (flag == 3) type = const_cast<char*>("topic bot->user");
+				else if (flag == 4) type = const_cast<char*>("indent bot");
+				else if (flag == 5) type = const_cast<char*>("indent human");
+				else if (flag == 6) type = const_cast<char*>("user only");
+				else if (flag == 7) type = const_cast<char*>("tags verify user->bot");
+				else if (flag == 8) type = const_cast<char*>("indent bot + topic");
+				else if (flag == 11) type = const_cast<char*>("timeline");
 				char* last = strrchr(name, '/');
 				if (last) name = last;
 				fprintf(out, (char*)"\r\n# ----------------- %s   %s\r\n", name, type);

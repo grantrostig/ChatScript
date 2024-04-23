@@ -45,16 +45,16 @@ extern char callerIP[ID_SIZE];
 extern bool serverRetryOK;
 
 // process user
-void GetUserData(ResetMode& buildReset,char* input);
+void GetUserData(ResetMode& buildReset,char const* input);
 void ReadNewUser();
 void ReadUserData();
 void WriteUserData(time_t curr,bool nobackup);
 char* WriteUserVariables(char* ptr,bool sharefile, bool compiling,char* saveJSON);
 void RecoverUser();
-void CopyUserTopicFile(char* newname);
+void CopyUserTopicFile(char const* newname);
 // login
 void ReadComputerID();
-bool Login(char* ptr,char* callee,char* ip,char* incoming);
+bool Login(char const* ptr,char const* callee,char const* ip,char const* incoming);
 void PartialLogin(char* caller,char* ip);
 void ResetUserChat();
 void KillShare();

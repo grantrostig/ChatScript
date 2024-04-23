@@ -548,7 +548,7 @@ FunctionResult HandleRelation(char* word1, char* op, char* word2, bool output, i
 	if (trace & TRACE_OUTPUT && output && CheckTopicTrace())
 	{
 		char* traceop = op;
-		if (!traceop) traceop = "x";
+		if (!traceop) traceop = const_cast<char*>("x");
 		char x[MAX_WORD_SIZE];
 		*x =  0;
 		if (*op == '&')

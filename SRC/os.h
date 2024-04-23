@@ -107,7 +107,7 @@ extern int jumpIndex;
 void ShowMemory(char* label);
 void JumpBack();
 void myexit(const char* msg, int code = 4);
-void mystart(char* msg);
+void mystart(char const* msg);
 extern char hide[4000];
 #define NORMALFILES 0
 #define MONGOFILES 1
@@ -164,8 +164,8 @@ void InitLogs();
 
 // MEMORY SYSTEM
 void ResetBuffers();
-char* AllocateBuffer(char*name = (char*) "",char* content = NULL);
-void FreeBuffer(char*name = (char*) "");
+char* AllocateBuffer(char const*name = (char*) "",char* content = NULL);
+void FreeBuffer(char const*name = (char*) "");
 void CloseBuffers();
 char* AllocateStack(const char* word, size_t len = 0, bool localvar = false, int align = 0);
 void ReleaseInfiniteStack();
@@ -275,9 +275,9 @@ typedef struct USERFILESYSTEM //  how to access user topic data
 extern USERFILESYSTEM userFileSystem;
 void InitUserFiles();
 void Bug0();
-void WalkDirectory(char* directory,FILEWALK function, uint64 flags,bool recursive);
-size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file,bool decrypt,char* filekind);
-size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file,bool encrypt,char* filekind);
+void WalkDirectory(char const* directory,FILEWALK function, uint64 flags,bool recursive);
+size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file,bool decrypt,char const* filekind);
+size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file,bool encrypt,char const* filekind);
 char* GetUserPath(char* name);
 
 // TIME
@@ -367,7 +367,7 @@ void Bug();
 void TrackTime(char* name, int elapsed);
 void TrackTime(WORDP D, int elapsed);
 void Prelog(char* user, char* usee, char* incoming);
-void LogChat(uint64 starttime, char* user, char* bot, char* IP, int turn, char* input, char* output, uint64 qtime);
+void LogChat(uint64 starttime, char const* user, char const* bot, char const* IP, int turn, char* input, char* output, uint64 qtime);
 
 // HOOKS
 typedef void (*HOOKPTR)(void);

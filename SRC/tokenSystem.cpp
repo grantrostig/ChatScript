@@ -2597,7 +2597,7 @@ void ProcessCompositeNumber()
     }
 }
 
-bool ReplaceWords(char* why,int i, int oldlength,int newlength,char** tokens) 
+bool ReplaceWords(char const* why,int i, int oldlength,int newlength,char** tokens) 
 {
 	if ((wordCount + (newlength-oldlength)) > REAL_SENTENCE_WORD_LIMIT) return false; // sentence limitation
 

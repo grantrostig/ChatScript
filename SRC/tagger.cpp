@@ -293,7 +293,7 @@ static char* Describe(int i,char* buffer)
 	return buffer;
 }
 
-static void DescribeUnit( int i, char* buffer, char* msg,unsigned int verbal, unsigned int clause)
+static void DescribeUnit( int i, char* buffer, char const* msg,unsigned int verbal, unsigned int clause)
 {
 	char word[MAX_WORD_SIZE];
 	if (i) // adjective object or causal infinitive
@@ -507,10 +507,10 @@ void DumpSentence(unsigned int start, unsigned int end)
 			else continue;
 			if (i == 1 && phrases[wordCount] == phrases[1]) 
 			{
-				DescribeComponent(wordCount,buffer,(char*)"{","}"); // wrapped?
+				DescribeComponent(wordCount,buffer,(char*)"{", const_cast<char*>("}")); // wrapped?
 				strcat(buffer,(char*)" ");
 			}
-			DescribeComponent(i,buffer,(char*)"{","}"); // wrapped?
+			DescribeComponent(i,buffer,(char*)"{", const_cast<char*>("}")); // wrapped?
 			strcat(buffer,(char*)" ");
 		}
 

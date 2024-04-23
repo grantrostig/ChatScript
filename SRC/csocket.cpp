@@ -767,7 +767,7 @@ restart: // start with user
 				else if (!strnicmp(ptr, (char*)":dllchat", 8))
 				{
 #ifdef WIN32
-					HINSTANCE hGetProcIDDLL = LoadLibrary((LPCSTR)"chatscript.dll");
+					HINSTANCE hGetProcIDDLL = LoadLibrary((LPCWSTR)"chatscript.dll");
 					if (!hGetProcIDDLL) {
 						printf("could not load cs dll\r\n");
 						myexit("no dll");

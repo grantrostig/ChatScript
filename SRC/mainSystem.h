@@ -110,8 +110,8 @@ extern char* originalUserMessage; // user input component
 #define TESTPATTERN_TRACE_SIZE 200000
  extern char* tracebuffer;
  extern int  configLinesLength;
- extern char* configFile;	// can set config params
- extern  char* configFile2;	// can set config params
+ extern char const* configFile;	// can set config params
+ extern  char const* configFile2;	// can set config params
  extern char* configLines[MAX_WORD_SIZE];
  extern char treetaggerParams[200];
 extern unsigned short int derivationIndex[MAX_SENTENCE_LENGTH];
@@ -171,7 +171,7 @@ extern  bool pendingUserReset;
 extern uint64 sourceStart;
 extern unsigned int sourceTokens;
 extern unsigned int sourceLines;
-extern char* version;
+extern char const* version;
 extern FILE* tsvFile;
 extern unsigned int tsvIndex;
 extern unsigned int tsvMessageField;
@@ -313,14 +313,14 @@ void ExecuteVolleyFile(FILE* sourceFile);
 
 #ifdef DLL
 #ifdef __linux__
-extern "C" int PerformChat(char* user, char* usee, char* incoming, char* ip, char* output);
+extern "C" int PerformChat(char const* user, char const* usee, char* incoming, char const* ip, char* output);
 extern "C" int PerformChatGivenTopic(char* user, char* usee, char* incoming, char* ip, char* output, char* topic);
 #else
-extern "C" __declspec(dllexport) int PerformChat(char* user, char* usee, char* incoming, char* ip, char* output);
+extern "C" __declspec(dllexport) int PerformChat(char const* user, char const* usee, char* incoming, char const* ip, char* output);
 extern "C" __declspec(dllexport) int PerformChatGivenTopic(char* user, char* usee, char* incoming, char* ip, char* output, char* topic);
 #endif
 #else
-int PerformChat(char* user, char* usee, char* incoming, char* ip, char* output);
+int PerformChat(char const* user, char const* usee, char* incoming, char const* ip, char* output);
 int PerformChatGivenTopic(char* user, char* usee, char* incoming, char* ip, char* output, char* topic);
 #endif
 

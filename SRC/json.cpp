@@ -16,7 +16,7 @@ marker fact is recreated.
 The marker fact is normally bypassed by all accesses to the items of a json object(so it does not
 	query or count or whatever) except when specially accessed by the above routines.
 #endif
-
+#ifndef DISCARDJSONOPEN
 	// GENERAL JSON SUPPORT
 char detectedlanguage[100];
 unsigned int build0jid = 0;
@@ -3645,3 +3645,4 @@ FunctionResult JSONReadCSVCode(char* buffer)
 	currentFact = NULL;
 	return result;
 }
+#endif

@@ -64,7 +64,7 @@ unsigned int GetIthSpot(WORDP D,int i, unsigned int& start,unsigned int& end);
 bool MarkWordHit(int depth, MEANING ucase, WORDP D, int index, unsigned int start, unsigned int end, unsigned int prefix = 0, unsigned int kind = 5);
 void ShowMarkData(char* word); 
 void MarkMeaningAndImplications(int depth,MEANING ucase,MEANING M,int start,int end,int kind = FIXED, bool sequence = false, bool once = false,int prequel = 0);
-void HuntMatch(int kind, char* word,bool strict,int start, int end, unsigned int& usetrace,unsigned int restriction = 0);
+void HuntMatch(int kind, char const* word,bool strict,int start, int end, unsigned int& usetrace,unsigned int restriction = 0);
 bool RemoveMatchValue(WORDP D, int position);
 unsigned int IsMarkedItem(WORDP D, int start, int end);
 void MarkAllImpliedWords(bool limitnlp);

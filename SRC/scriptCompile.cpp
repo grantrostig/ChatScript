@@ -95,7 +95,7 @@ static unsigned int mapTopicFileCount = 0;
 static unsigned int mapItemCount = 0;
 static unsigned int mapRuleCount = 0;
 
-void EraseTopicBin(unsigned int build, char* name)
+void EraseTopicBin(unsigned int build, char const* name)
 {
 	int i = -1;
 	int result;
@@ -1058,7 +1058,7 @@ char* ReadSystemToken(char* ptr, char* word, bool separateUnderscore) //   how w
     return ptr;
 }
 
-void EraseTopicFiles(unsigned int build, char* name)
+void EraseTopicFiles(unsigned int build, char const* name)
 {
     int i = -1;
     while (topicFiles[++i])
@@ -1615,7 +1615,7 @@ static char* AddVerify(char* kind, char* sample)
 	return 0;	// kill rest of line
 }
 
-static void WriteVerify(char* label)
+static void WriteVerify(char const* label)
 {
 	if (!verifyIndex) return;
 	char name[100];

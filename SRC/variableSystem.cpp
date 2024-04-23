@@ -673,7 +673,7 @@ void ShowChangedVariables()
     }
 }
 
-void PrepareVariableChange(WORDP D, char* word, bool init)
+void PrepareVariableChange(WORDP D, char const* word, bool init)
 {
     if (D->word[1] == '_') // tmp var
     {
@@ -699,7 +699,7 @@ void PrepareVariableChange(WORDP D, char* word, bool init)
     }
 }
 
-static  void HandleMonitoredEngineVariables(const char* var, char* word, bool assignment)
+static  void HandleMonitoredEngineVariables(const char* var, char const* word, bool assignment)
 {
     if (var[1] != 'c' || var[2] != 's' || var[3] != '_') return; // not a monitored $cs_  variable
 
@@ -813,7 +813,7 @@ static  void HandleMonitoredEngineVariables(const char* var, char* word, bool as
     }
 }
 
-void SetAPIVariable(WORDP D, char* value) //  coming from api
+void SetAPIVariable(WORDP D, char const* value) //  coming from api
 {
     // check for json assign
     if (strchr(D->word, '.') || strchr(D->word, '['))
@@ -837,7 +837,7 @@ void SetAPIVariable(WORDP D, char* value) //  coming from api
     }
 }
 
-void SetUserVariable(const char* var, char* word, bool assignment,bool reuse)
+void SetUserVariable(const char* var, char const* word, bool assignment,bool reuse)
 {
     WORDP D = StoreWord(var,AS_IS);				// find or create the var.
     if (!D) return; // ran out of memory
@@ -1140,7 +1140,7 @@ static int compareVariables(const void *var1, const void *var2)
     return strcmp((*(WORDP *)var1)->word, (*(WORDP *)var2)->word);
 }
 
-static void ListVariables(char* header, HEAPREF varthread)
+static void ListVariables(char const* header, HEAPREF varthread)
 {
     char* value;
     while (varthread)

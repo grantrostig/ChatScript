@@ -93,9 +93,9 @@ static void VerifyFact(FACT* F)
 	if (!verifyFacts) return;
 
 	// prove dict entries can find this fact and that is has no loops
-	char* subject = "";
-	char* verb = "";
-	char* object = "";
+	char* subject = const_cast<char*>("");
+	char* verb = const_cast<char*>("");
+	char* object = const_cast<char*>("");
 	if (!(F->flags & FACTSUBJECT))
 	{
 		VerifyField(F, F->subject, 0);
@@ -426,7 +426,7 @@ bool GetSetMod(char* x)
 
 char* GetSetType(char* x)
 { // @13subject returns subject
-	if (!x[0] || !x[1] ) return ""; // safety from bad data
+	if (!x[0] || !x[1] ) return const_cast<char*>(""); // safety from bad data
 	x += 2;
 	if (IsDigit(*x)) ++x;
 	return x;
@@ -565,7 +565,7 @@ static void ReleaseDictWord(WORDP D,WORDP dictbase)
 	{
 		if (!(D->internalBits & BEEN_HERE) && !GetSubjectNondeadHead(D))
 		{
-			D->word = " "; // kill off its name
+			D->word = const_cast<char*>(" "); // kill off its name
 		}
 	}
 }
@@ -1821,7 +1821,7 @@ char* WriteFact(FACT* F,bool comment,char* buffer,bool ignoreDead,bool eol,bool 
 			buffer += strlen(buffer);
 		}
 		else 
-			return ""; // illegal - only happens with facts (nondead) that refer to dead facts?
+			return const_cast<char*>(""); // illegal - only happens with facts (nondead) that refer to dead facts?
 	}
 
 	//   fact opener

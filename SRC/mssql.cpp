@@ -86,7 +86,7 @@ struct DbInterface_t;
 static DbInterface_t* get_db(int id);
 static bool is_db_initialized(ConnectionId c_id);
 static void set_db_initialized(ConnectionId c_id, bool flag);
-static void set_error_max(char* str);
+static void set_error_max(char const* str);
 static const char* get_error_max();
 
 // useful mssql commands (to use from sqlcmd). Always follow with newline, and GO
@@ -116,7 +116,7 @@ const char* MsSqlVersion()
     return(version);
 }
 
-static void loadSingleSqlParam(char* params, char* name, char* destination)
+static void loadSingleSqlParam(char* params, char const* name, char* destination)
 {
     char name_with_equals[300];
     sprintf(name_with_equals, "%s=", name);
@@ -423,7 +423,7 @@ const char* mssql_error(void)
     return error_buf;
 }
 
-static void set_error_max(char* str) {
+static void set_error_max(char const* str) {
     strcpy(error_max, str);
 }
 

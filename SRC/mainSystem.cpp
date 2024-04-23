@@ -1,7 +1,7 @@
 #include "common.h" 
 #include "evserver.h"
 
-char* version = "13.4";
+char const* version = "13.4";
 const char* buildString = "compiled " __DATE__ ", " __TIME__ ".";
 char sourceInput[200];
 int cs_qsize = 0;
@@ -70,8 +70,8 @@ uint64 timedeployed = 0;
 // parameters
 unsigned int argc;
 char** argv;
-char* configFile = "cs_init.txt";	// can set config params
-char* configFile2 = "cs_initmore.txt";	// can set config params
+char const* configFile = "cs_init.txt";	// can set config params
+char const* configFile2 = "cs_initmore.txt";	// can set config params
 char* configLines[MAX_WORD_SIZE];	// can set config params
 
 char livedataFolder[500];		// where is the livedata folder
@@ -517,15 +517,15 @@ void CreateSystem()
 	char* os;
 	mystart("createsystem");
 #ifdef WIN32
-	os = "Windows";
+	os = const_cast<char*>("Windows");
 #elif IOS
-	os = "IOS";
+	os = const_cast<char*>("IOS");
 #elif __MACH__
-	os = "MACH";
+	os = const_cast<char*>("MACH");
 #elif FREEBSD
-	os = "FreeBSD";
+	os = const_cast<char*>("FreeBSD");
 #else
-	os = "LINUX";
+	os = const_cast<char*>("LINUX");
 #endif
 
 	if (!buffers) // restart asking for new memory allocations
@@ -546,12 +546,12 @@ void CreateSystem()
 	char* kind;
 	int pid = 0;
 #ifdef EVSERVER
-	kind = "EVSERVER";
+	kind = const_cast<char*>("EVSERVER");
 	pid = getpid();
 #elif DEBUG
-	kind = "Debug";
+	kind = const_cast<char*>("Debug");
 #else
-	kind = "Release";
+	kind = const_cast<char*>("Release");
 #endif
 	sprintf(data, (char*)"ChatScript %s %s pid:%d os:%ld-bit %s compiled: %s", kind, version, pid, (long int)(sizeof(char*) * 8), os, compileDate);
 	strcat(data, (char*)" rootdir:");
@@ -2567,7 +2567,7 @@ static void ValidateUserInput(char* oobSkipped)
 	}
 }
 
-static int Crashed(char* output, bool reloading, char* ip)
+static int Crashed(char* output, bool reloading, char const* ip)
 {
 	if (crashBack) myexit((char*)"continued crash exit"); // if calling crashfunction crashes
 	lastCrashTime = ElapsedMilliseconds();
@@ -2637,7 +2637,7 @@ static void LimitUserInput(char* at)
 	if (inputLimit && inputLimit <= (int)len1) at[inputLimit] = 0; // relative limit on user component
 }
 
-int PerformChat(char* user, char* usee, char* incomingmessage, char* ip, char* output) // returns volleycount or 0 if command done or -1 PENDING_RESTART
+int PerformChat(char const* user, char const* usee, char* incomingmessage, char const* ip, char* output) // returns volleycount or 0 if command done or -1 PENDING_RESTART
 { //   primary entrypoint for chatbot -- null incoming treated as conversation start.
   
 	if (HasUTF8BOM(incomingmessage)) incomingmessage += 3; // skip UTF8 BOM (from file)
@@ -2666,7 +2666,7 @@ int PerformChat(char* user, char* usee, char* incomingmessage, char* ip, char* o
 	softRestart = false;
 	timeout = false;
 	SetDirectory(rootdir); // an outside caller cant be trusted
-	currentInput = "";
+	currentInput = const_cast<char*>("");
 	buildtransientjid = 0;
 	builduserjid = 0;
 	char* safeInput = NULL; // will become base of stack allocation for input buffer
@@ -2856,14 +2856,14 @@ int PerformChat(char* user, char* usee, char* incomingmessage, char* ip, char* o
 		if (!*computerID && (!originalUserMessage || *originalUserMessage != ':'))  // a  command will be allowed to execute independent of bot- ":build" works to create a bot
 		{
 			strcpy(output, (char*)"No such bot.\r\n");
-			char* fact = "no default fact";
+			char* fact = const_cast<char*>("no default fact");
 			WORDP D = FindWord((char*)"defaultbot",0,LOWERCASE_LOOKUP);
-			if (!D) fact = "defaultbot word not found";
+			if (!D) fact = const_cast<char*>("defaultbot word not found");
 			else
 			{
 				FACT* F = GetObjectHead(D);
-				if (!F)  fact = "defaultbot fact not found";
-				else if (F->flags & FACTDEAD) fact = "dead default fact";
+				if (!F)  fact = const_cast<char*>("defaultbot fact not found");
+				else if (F->flags & FACTDEAD) fact = const_cast<char*>("dead default fact");
 				else fact = Meaning2Word(F->subject)->word;
 			}
 

@@ -57,7 +57,7 @@ void PartialLogin(char* caller,char* ip)
 	else *callerIP = 0;
 }
 
-bool Login(char* user,char* usee,char* ip,char* incoming) //   select the participants
+bool Login(char const* user,char const* usee,char const* ip,char const* incoming) //   select the participants
 {
 	//   case insensitive logins
 	callee[0] = 0;
@@ -447,7 +447,7 @@ void RecoverUser() // regain stuff we loaded from user
 	pendingTopicIndex = originalPendingTopicIndex;
 }
 
-void CopyUserTopicFile(char* newname)
+void CopyUserTopicFile(char const* newname)
 {
     char file[SMALL_WORD_SIZE];
     sprintf(file,(char*)"%s/topic_%s_%s.txt",usersfolder,loginID,computerID);
@@ -916,7 +916,7 @@ static  bool ReadFileData(char* bot) // passed  buffer with file content (where 
     return true;
 }
 
-void GetUserData(ResetMode& buildReset,char* incoming)
+void GetUserData(ResetMode& buildReset,char const* incoming)
 {
 	loading = true;
 	// accept a user topic file erase command

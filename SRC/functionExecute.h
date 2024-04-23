@@ -141,7 +141,7 @@ extern int globalDepth;
 
 #ifndef DISCARDWEBSOCKET
 void WebSocketClient(char* url,char* startmessage);
-FunctionResult WebsocketCloseCode(char* buffer);
+FunctionResult WebsocketCloseCode(char const* buffer);
 #endif
 
 #ifdef WIN32
@@ -177,11 +177,11 @@ unsigned char* GetDefinition(WORDP D);
 void InitFunctionSystem(); 
 char* DoFunction(char* name, char* ptr, char* buffer,FunctionResult &result);
 void DumpFunctions();
-unsigned int Callback(WORDP D,char* arguments,bool boot,bool mainoutput = false);
+unsigned int Callback(WORDP D,char const* arguments,bool boot,bool mainoutput = false);
 void SaveMark(char* buffer,unsigned int iterator);
 FunctionResult RegularReuse(int topic, int id, char* rule,char* buffer,char* arg3,bool crosstopic);
 void UpdateTrace(char* value);
-FunctionResult InternalCall(char* name, EXECUTEPTR fn, char* arg1, char* arg2, char* arg3, char* buffer, char* arg4 = NULL, char* arg5 = NULL);
+FunctionResult InternalCall(char const* name, EXECUTEPTR fn, char const* arg1, char const* arg2, char const* arg3, char* buffer, char* arg4 = NULL, char* arg5 = NULL);
 
 FunctionResult KeywordTopicsCode(char* buffer);
 void SetBaseMemory();

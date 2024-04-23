@@ -69,7 +69,7 @@ static char testoutputbacktrace[MAX_WORD_SIZE];
 static int testoutputbacktracecount = 0;
 
 static char* nullArguments[MAX_ARG_LIMIT + 1] =
-{ "","","","","","","","",   "","","","","","","","",  "","","","","","","","",  "","","","","","","","" };
+{ const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),   const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),  const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),  const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>(""),const_cast<char*>("") };
 
 APICall csapicall = NO_API_CALL;
 HEAPREF patternwordthread = NULL;
@@ -1080,7 +1080,7 @@ static char* UserCall(char* buffer, char* ptr, CALLFRAME * frame, FunctionResult
 	return ptr;
 }
 
-FunctionResult InternalCall(char* name, EXECUTEPTR fn, char* arg1, char* arg2, char* arg3, char* buffer, char* arg4, char* arg5)
+FunctionResult InternalCall(char const* name, EXECUTEPTR fn, char const* arg1, char const* arg2, char const* arg3, char* buffer, char* arg4, char* arg5)
 {
 	char namx[150];
 	if (*name == '\'') ++name;  // quoted needed to survive compiler
@@ -1317,29 +1317,29 @@ void DumpFunctions()
 
 char* ResultCode(FunctionResult result)
 {
-	char* ans = "OK";
-	if (result & ENDCALL_BIT) ans = "ENDCALL";
-	else if (result & ENDRULE_BIT) ans = "ENDRULE";
-	else if (result & FAILRULE_BIT) ans = "FAILRULE";
-	else if (result & RETRYRULE_BIT) ans = "RETRYRULE";
-	else if (result & RETRYTOPRULE_BIT) ans = "RETRYTOPRULE";
+	char* ans = const_cast<char*>("OK");
+	if (result & ENDCALL_BIT) ans = const_cast<char*>("ENDCALL");
+	else if (result & ENDRULE_BIT) ans = const_cast<char*>("ENDRULE");
+	else if (result & FAILRULE_BIT) ans = const_cast<char*>("FAILRULE");
+	else if (result & RETRYRULE_BIT) ans = const_cast<char*>("RETRYRULE");
+	else if (result & RETRYTOPRULE_BIT) ans = const_cast<char*>("RETRYTOPRULE");
 
-	else if (result & ENDTOPIC_BIT) ans = "ENDTOPIC";
-	else if (result & FAILTOPIC_BIT) ans = "FAILTOPIC";
-	else if (result & RETRYTOPIC_BIT) ans = "RETRYTOPIC";
+	else if (result & ENDTOPIC_BIT) ans = const_cast<char*>("ENDTOPIC");
+	else if (result & FAILTOPIC_BIT) ans = const_cast<char*>("FAILTOPIC");
+	else if (result & RETRYTOPIC_BIT) ans = const_cast<char*>("RETRYTOPIC");
 
-	else if (result & ENDSENTENCE_BIT) ans = "ENDSENTENCE";
-	else if (result & FAILSENTENCE_BIT) ans = "FAILSENTENCE";
-	else if (result & RETRYSENTENCE_BIT) ans = "RETRYSENTENCE";
+	else if (result & ENDSENTENCE_BIT) ans = const_cast<char*>("ENDSENTENCE");
+	else if (result & FAILSENTENCE_BIT) ans = const_cast<char*>("FAILSENTENCE");
+	else if (result & RETRYSENTENCE_BIT) ans = const_cast<char*>("RETRYSENTENCE");
 
-	else if (result & RETRYINPUT_BIT) ans = "RETRYINPUT";
-	else if (result & ENDINPUT_BIT) ans = "ENDINPUT";
-	else if (result & FAILINPUT_BIT) ans = "FAILINPUT";
-	else if (result & FAILMATCH_BIT) ans = "FAILMATCH";
-	else if (result == NOPROBLEM_BIT) ans = "NOPROBLEM";
-	else if (result == FAILLOOP_BIT) ans = "FAILLOOP";
-	else if (result == ENDLOOP_BIT) ans = "ENDLOOP";
-	else if (result & UNDEFINED_FUNCTION) ans = "UNDEFINED_FUNCTION";
+	else if (result & RETRYINPUT_BIT) ans = const_cast<char*>("RETRYINPUT");
+	else if (result & ENDINPUT_BIT) ans = const_cast<char*>("ENDINPUT");
+	else if (result & FAILINPUT_BIT) ans = const_cast<char*>("FAILINPUT");
+	else if (result & FAILMATCH_BIT) ans = const_cast<char*>("FAILMATCH");
+	else if (result == NOPROBLEM_BIT) ans = const_cast<char*>("NOPROBLEM");
+	else if (result == FAILLOOP_BIT) ans = const_cast<char*>("FAILLOOP");
+	else if (result == ENDLOOP_BIT) ans = const_cast<char*>("ENDLOOP");
+	else if (result & UNDEFINED_FUNCTION) ans = const_cast<char*>("UNDEFINED_FUNCTION");
 	return ans;
 };
 
@@ -1650,7 +1650,7 @@ FunctionResult FLR(char* buffer, char* which)
 	{
 		char factID[100];
 		char* piece;
-		if (Mfirst == 0xffffffff) piece = "null";
+		if (Mfirst == 0xffffffff) piece = const_cast<char*>("null");
 		else if (factSubject)
 		{
 			sprintf(factID, (char*)"%u", Mfirst);
@@ -1670,7 +1670,7 @@ FunctionResult FLR(char* buffer, char* which)
 			SetWildCard(piece, piece, 0, 0);
 
 			//   verb 
-			if (Mfirst == 0xffffffff) piece = "null";
+			if (Mfirst == 0xffffffff) piece = const_cast<char*>("null");
 			else
 			{
 				MEANING M = F->verb;
@@ -1686,7 +1686,7 @@ FunctionResult FLR(char* buffer, char* which)
 			SetWildCard(piece, piece, 0, 0);
 
 			//   object
-			if (Mfirst == 0xffffffff) piece = "null";
+			if (Mfirst == 0xffffffff) piece = const_cast<char*>("null");
 			else if (factObject)
 			{
 				sprintf(factID, (char*)"%u", Mlast);
@@ -1854,7 +1854,7 @@ FunctionResult GambitCode(char* buffer)
 	--adjustIndent; // stay at call level
 	*arguments[i] = 0;
 	char* oldhow = howTopic;
-	howTopic = "gambit";
+	howTopic = const_cast<char*>("gambit");
 
 	int oldIndex = responseIndex;
 	FunctionResult result = NOPROBLEM_BIT;
@@ -2635,7 +2635,7 @@ static FunctionResult SetRejoinderCode(char* buffer)
 	bool output = true;
 	char* tag = ARGUMENT(1); // kind of rejoinder or only 1 arg
 	char* where = ARGUMENT(2); // to where if 2 args given
-	if (!stricmp(where, (char*)"null")) where = ""; // clear to null
+	if (!stricmp(where, (char*)"null")) where = const_cast<char*>(""); // clear to null
 	
 	if (!*ARGUMENT(2)) { where = tag; } // single arg given
 	else if (!stricmp(tag, (char*)"input"))
@@ -2916,7 +2916,7 @@ static FunctionResult MarkCode(char* buffer)
 #ifndef DISCARDTESTING
 		if (debugMark)
 		{
-			(*debugMark)("+all", "all");
+			(*debugMark)(const_cast<char*>("+all"), const_cast<char*>("all"));
 		}
 #endif
 		return NOPROBLEM_BIT;
@@ -3000,7 +3000,7 @@ static FunctionResult MarkCode(char* buffer)
 		{
 			char posn[MAX_WORD_SIZE];
 			sprintf(posn, "+%u-%u", startPosition, endPosition);
-			(*debugMark)(posn, "*");
+			(*debugMark)(posn, const_cast<char*>("*"));
 		}
 #endif
 		if (trace & TRACE_FLOW) Log(USERLOG, "\r\n");
@@ -3227,7 +3227,7 @@ static FunctionResult RoleCode(char* buffer)
 }
 
 static char* tokenValues[] = {
-	(char*)"DO_ESSENTIALS",(char*)"DO_SUBSTITUTES",(char*)"DO_CONTRACTIONS",(char*)"DO_INTERJECTIONS",(char*)"DO_BRITISH", "DO_SPELLING", "DO_TEXTING", "DO_NOISE",
+	(char*)"DO_ESSENTIALS",(char*)"DO_SUBSTITUTES",(char*)"DO_CONTRACTIONS",(char*)"DO_INTERJECTIONS",(char*)"DO_BRITISH", const_cast<char*>("DO_SPELLING"), const_cast<char*>("DO_TEXTING"), const_cast<char*>("DO_NOISE"),
 	(char*)"DO_PRIVATE",(char*)"DO_NUMBER_MERGE",(char*)"DO_PROPERNAME_MERGE",(char*)"DO_SPELLCHECK",(char*)"DO_INTERJECTION_SPLITTING",(char*)"DO_POSTAG/PRESENT",(char*)"DO_PARSE/PAST",(char*)"NO_IMPERATIVE/FUTURE",
 	(char*)"NO_WITHIN/PRESENT_PERFECT",(char*)"DO_DATE_MERGE/CONTINUOUS",(char*)"NO_SENTENCE_END/PERFECT",(char*)"NO_INFER_QUESTION/PASSIVE",
 	(char*)"NO_HYPHEN_END",(char*)"NO_COLON_END",(char*)"NO_SEMICOLON_END",(char*)"STRICT_CASING",
@@ -3597,7 +3597,7 @@ static FunctionResult UnmarkCode(char* buffer)
 			oldunmarked[255] = 0;
 		}
 #ifndef DISCARDTESTING
-		if (debugMark) (*debugMark)("-revert", "*");
+		if (debugMark) (*debugMark)(const_cast<char*>("-revert"), const_cast<char*>("*"));
 #endif
 		return NOPROBLEM_BIT;
 	}
@@ -3659,7 +3659,7 @@ static FunctionResult UnmarkCode(char* buffer)
 		ClearWordWhere(D, -1);
 		*buffer = 0;
 #ifndef DISCARDTESTING
-		if (debugMark) (*debugMark)("-all", "all");
+		if (debugMark) (*debugMark)(const_cast<char*>("-all"), const_cast<char*>("all"));
 #endif
 		return NOPROBLEM_BIT;
 	}
@@ -3699,7 +3699,7 @@ static FunctionResult UnmarkCode(char* buffer)
 		{
 			char posn[MAX_WORD_SIZE];
 			sprintf(posn, "-%u-%u", startPosition, endPosition);
-			(*debugMark)(posn, "*");
+			(*debugMark)(posn, const_cast<char*>("*"));
 		}
 #endif
 		if (trace & TRACE_OUTPUT) Log(USERLOG, "\r\n");
@@ -4942,7 +4942,7 @@ FunctionResult IdentifyCode(char* buffer)
 {
 	char* os;
 #ifdef WIN32
-	os = "Windows";
+	os = const_cast<char*>("Windows");
 #elif IOS
 	os = "IOS";
 #elif __MACH__
@@ -6346,8 +6346,8 @@ static FunctionResult BurstCode(char* buffer) //   take value and break into fac
 
 	if (!*scan || !*scan1) // scan1 test just to suppress compiler warning
 	{
-		scan = " "; // default is space AND OR _
-		scan1 = "_";
+		scan = const_cast<char*>(" "); // default is space AND OR _
+		scan1 = const_cast<char*>("_");
 	}
 
 	if (*ptr == '"') // if a quoted string, remove the quotes
@@ -7155,8 +7155,8 @@ static FunctionResult POSCode(char* buffer)
 			char* past = GetPastTense(infin);
 			if (!stricmp(infin, (char*)"be"))
 			{
-				if (!stricmp(arg4, (char*)"I")) past = "was";
-				else  past = "were";
+				if (!stricmp(arg4, (char*)"I")) past = const_cast<char*>("was");
+				else  past = const_cast<char*>("were");
 			}
 			if (!past) return FAILRULE_BIT;
 			strcpy(buffer, past);
@@ -7172,15 +7172,15 @@ static FunctionResult POSCode(char* buffer)
 			char* third = GetPresent(infin);
 			if (!stricmp(infin, (char*)"be"))
 			{
-				if (!stricmp(arg4, (char*)"I")) third = "am";
-				else if (!stricmp(arg4, (char*)"you") || !stricmp(arg4, (char*)"we") || !stricmp(arg4, (char*)"they")) third = "are";
-				else  third = "is";
+				if (!stricmp(arg4, (char*)"I")) third = const_cast<char*>("am");
+				else if (!stricmp(arg4, (char*)"you") || !stricmp(arg4, (char*)"we") || !stricmp(arg4, (char*)"they")) third = const_cast<char*>("are");
+				else  third = const_cast<char*>("is");
 			}
 			if (!stricmp(infin, (char*)"do"))
 			{
-				if (!stricmp(arg4, (char*)"I")) third = "do";
-				else if (!stricmp(arg4, (char*)"you") || !stricmp(arg4, (char*)"we") || !stricmp(arg4, (char*)"they")) third = "do";
-				else  third = "does";
+				if (!stricmp(arg4, (char*)"I")) third = const_cast<char*>("do");
+				else if (!stricmp(arg4, (char*)"you") || !stricmp(arg4, (char*)"we") || !stricmp(arg4, (char*)"they")) third = const_cast<char*>("do");
+				else  third = const_cast<char*>("does");
 			}
 			if (!third) return FAILRULE_BIT;
 			strcpy(buffer, third);
@@ -7218,25 +7218,25 @@ static FunctionResult POSCode(char* buffer)
 
 		if (!strcmp(arg2, (char*)"do")) //   present tense
 		{
-			if (strcmp(arg3, (char*)"I") && strcmp(arg3, (char*)"you") && strcmp(arg3, (char*)"we") && strcmp(arg3, (char*)"they")) result = "does";
-			else result = "do";
+			if (strcmp(arg3, (char*)"I") && strcmp(arg3, (char*)"you") && strcmp(arg3, (char*)"we") && strcmp(arg3, (char*)"they")) result = const_cast<char*>("does");
+			else result = const_cast<char*>("do");
 		}
 		else if (!strcmp(arg2, (char*)"have"))
 		{
-			if (strcmp(arg3, (char*)"I") && strcmp(arg3, (char*)"you") && strcmp(arg3, (char*)"we") && strcmp(arg3, (char*)"they")) result = "has";
-			else result = "have";
+			if (strcmp(arg3, (char*)"I") && strcmp(arg3, (char*)"you") && strcmp(arg3, (char*)"we") && strcmp(arg3, (char*)"they")) result = const_cast<char*>("has");
+			else result = const_cast<char*>("have");
 		}
 		else if (!strcmp(arg2, (char*)"be"))
 		{
-			if (!strcmp(arg3, (char*)"I")) result = "am";
-			else if (!strcmp(arg3, (char*)"you")) result = "are";
-			else if (!strcmp(arg3, (char*)"we") || !strcmp(arg3, (char*)"they"))  result = "are";
-			else result = "is";
+			if (!strcmp(arg3, (char*)"I")) result = const_cast<char*>("am");
+			else if (!strcmp(arg3, (char*)"you")) result = const_cast<char*>("are");
+			else if (!strcmp(arg3, (char*)"we") || !strcmp(arg3, (char*)"they"))  result = const_cast<char*>("are");
+			else result = const_cast<char*>("is");
 		}
 		else if (!strcmp(arg2, (char*)"was") || !strcmp(arg2, (char*)"were")) //   past tense
 		{
-			if (!strcmp(arg3, (char*)"I")) result = "was";
-			else result = "were";
+			if (!strcmp(arg3, (char*)"I")) result = const_cast<char*>("was");
+			else result = const_cast<char*>("were");
 		}
 		else result = arg2;
 		strcpy(buffer, result);
@@ -7251,10 +7251,10 @@ static FunctionResult POSCode(char* buffer)
 			for (unsigned int i = 0; i < n; ++i)
 			{
 				char* word = GetBurstWord(i);
-				if (!stricmp(word, (char*)"my")) word = "your";
-				else if (!stricmp(word, (char*)"your")) word = "my";
-				else if (!stricmp(word, (char*)"I")) word = "you";
-				else if (!stricmp(word, (char*)"you")) word = "I";
+				if (!stricmp(word, (char*)"my")) word = const_cast<char*>("your");
+				else if (!stricmp(word, (char*)"your")) word = const_cast<char*>("my");
+				else if (!stricmp(word, (char*)"I")) word = const_cast<char*>("you");
+				else if (!stricmp(word, (char*)"you")) word = const_cast<char*>("I");
 				strcpy(buffer, word);
 				buffer += strlen(buffer);
 				if (i != (n - 1)) strcpy(buffer, (char*)" ");
@@ -7685,10 +7685,10 @@ static FunctionResult FindTextCode(char* buffer)
 	// find value
 	char* find = ARGUMENT(2);
 	if (!*find) return FAILRULE_BIT;
-	else if (*find == '\\' && find[1] == 't') find = "\t";
-	else if (*find == '\\' && find[1] == 'n') find = "\n";
-	else if (*find == '\\' && find[1] == '\\' && find[2] == 't') find = "\\t";
-	else if (*find == '\\' && find[1] == '\\' && find[2] == 'n') find = "\\n";
+	else if (*find == '\\' && find[1] == 't') find = const_cast<char*>("\t");
+	else if (*find == '\\' && find[1] == 'n') find = const_cast<char*>("\n");
+	else if (*find == '\\' && find[1] == '\\' && find[2] == 't') find = const_cast<char*>("\\t");
+	else if (*find == '\\' && find[1] == '\\' && find[2] == 'n') find = const_cast<char*>("\\n");
 	else if (*find == '"')
 	{
 		size_t len = strlen(find);
@@ -8271,7 +8271,7 @@ static FunctionResult DefineCode(char* buffer)
 	if (!stricmp(which, (char*)"all"))
 	{
 		doall = true;
-		which = "";
+		which = const_cast<char*>("");
 	}
 	if (!stricmp(ARGUMENT(3), (char*)"all")) doall = true;
 
@@ -9058,7 +9058,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 	}
 	else
 	{
-		char* msg = "tcpopen- only POST and GET allowed\r\n";
+		char* msg = const_cast<char*>("tcpopen- only POST and GET allowed\r\n");
 		SetUserVariable((char*)"$$tcpopen_error", msg);	// pass along the error
 		Log(USERLOG, msg);
 		return FAILRULE_BIT;
@@ -9068,7 +9068,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 	char* dot = strchr(url, '.');
 	if (!dot)
 	{
-		char* msg = "tcpopen- an url was not given\r\n";
+		char* msg = const_cast<char*>("tcpopen- an url was not given\r\n");
 		SetUserVariable((char*)"$$tcpopen_error", msg);	// pass along the error
 		Log(USERLOG, msg);
 		return FAILRULE_BIT;
@@ -9198,7 +9198,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 		}
 	}
 	catch (SocketException e) {
-		char* msg = "tcpopen- failed to connect to server or died in transmission\r\n";
+		char* msg = const_cast<char*>("tcpopen- failed to connect to server or died in transmission\r\n");
 		SetUserVariable((char*)"$$tcpopen_error", msg);	// pass along the error
 		Log(USERLOG, msg);
 		Log(USERLOG, "failed to connect to server %s %d\r\n", url, portid);
@@ -9211,7 +9211,7 @@ static FunctionResult TCPOpenCode(char* buffer)
 	{
 		if (strnicmp(tcpbuffer, (char*)"HTTP", 4))
 		{
-			char* msg = "tcpopen- no HTTP ack code\r\n";
+			char* msg = const_cast<char*>("tcpopen- no HTTP ack code\r\n");
 			SetUserVariable((char*)"$$tcpopen_error", msg);
 			Log(USERLOG, msg);
 			ReleaseStack(tcpbuffer); // short term
@@ -9249,14 +9249,14 @@ static FunctionResult TCPOpenCode(char* buffer)
 		buffer += strlen(buffer);
 		if (result == UNDEFINED_FUNCTION)
 		{
-			char* msg = "tcpopen- no such function to call";
+			char* msg = const_cast<char*>("tcpopen- no such function to call");
 			SetUserVariable((char*)"$$tcpopen_error", msg);
 			Log(USERLOG, msg);
 			result = FAILRULE_BIT;
 		}
 		else if (result & FAILCODES)
 		{
-			char* msg = "tcpopen- function call failed";
+			char* msg = const_cast<char*>("tcpopen- function call failed");
 			SetUserVariable((char*)"$$tcpopen_error", msg);
 			Log(USERLOG, msg);
 		}
@@ -9754,7 +9754,7 @@ static HEAPREF MakeVariables(MEANING array, bool needNL) // array of objects des
 		char* varname = D->word;
 
 		char* text = Meaning2Word(F->object)->word;
-		if (F->flags & JSON_PRIMITIVE_VALUE && !stricmp(text, "null")) text = "";
+		if (F->flags & JSON_PRIMITIVE_VALUE && !stricmp(text, "null")) text = const_cast<char*>("");
 		char* base = SkipWhitespace(text);
 		if (*base == '{' || *base == '[') // possible json embedded in string
 		{
@@ -10116,7 +10116,7 @@ static void UndoAPICall(HEAPREF changedIncomingVariables,MEANING conceptlist, FA
 
 static bool TestPatternAgainstSentence(int sentenceid, int index, char* label, char* pattern, char* buffer)
 {
-	if (!label) label = "";
+	if (!label) label = const_cast<char*>("");
 	pattern = strchr(pattern, '('); // may have ^ or  []concepts in it or || safewords
 	if (!pattern) return false; // no pattern found
 	MARKDATA hitdata;
@@ -11183,7 +11183,7 @@ static FunctionResult TestPatternCode(char* buffer)
 
 	bool bwinfo = false;
 
-	char* put = "";
+	char* put = const_cast<char*>("");
 	if (stricmp(X->word, "null")) put = X->word;
 	testpatterninput = put;
 	// printf("RAW %s\r\n", HexDisplay(put));

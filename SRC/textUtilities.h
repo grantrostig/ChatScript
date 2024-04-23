@@ -145,7 +145,7 @@ char* RemoveEscapesWeAdded(char* at);
 bool IsComparator(char* word);
 void ConvertNL(char* ptr);
 char* FindJMSeparator(char* ptr, char c);
-void CopyParam(char* from, char* to, unsigned int limit = 100);
+void CopyParam(char* from, char const* to, unsigned int limit = 100);
 char* IsSymbolCurrency(char* ptr);
 void ComputeWordData(char* word, WORDINFO* info);
 char* CopyRemoveEscapes(char* to, char* at,int limit,bool all = false);
@@ -173,7 +173,7 @@ void ClearNumbers();
 void EraseCurrentInput();
 bool LegalVarChar(char at);
 char* GetActual(char* msg);
-bool AddInput(char* buffer,int kind,bool clear = false);
+bool AddInput(char const* buffer,int kind,bool clear = false);
 char* FindSystemNameByValue(uint64 val); // system flags
 uint64 FindSystemValueByName(char* name);
 char* FindParseNameByValue(uint64 val); // parse flags
@@ -252,7 +252,7 @@ bool ReadDocument(char* inBuffer,FILE* sourceFile);
 char* ReadFlags(char* ptr,uint64& flags,bool &bad, bool &response, bool factcall = false);
 char* ReadHex(char* ptr, uint64 & value);
 char* ReadInt(char* ptr, int & value);
-char* ReadInt64(char* ptr, int64 & w);
+char* ReadInt64(char const* ptr, int64 & w);
 int64 atoi64(char* ptr );
 char* ReadQuote(char* ptr, char* buffer,bool backslash = false, bool noblank = true,int limit = MAX_WORD_SIZE - 10);
 char* ReadArgument(char* ptr, char* buffer, FunctionResult &result);

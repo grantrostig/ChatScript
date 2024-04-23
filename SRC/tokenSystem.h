@@ -30,7 +30,7 @@ extern char burstWords[MAX_BURST][MAX_WORD_SIZE];
 extern int inputNest;
 extern int hasFundamentalMeanings;
 extern int actualTokenCount;
-bool ReplaceWords(char* why,int i, int oldlength,int newlength,char** tokens);
+bool ReplaceWords(char const* why,int i, int oldlength,int newlength,char** tokens);
 int BurstWord(const char* word, int contractionStyle = 0);
 char* GetBurstWord(unsigned int n);
 char* JoinWords(unsigned int n,bool output = false,char* buffer = NULL);

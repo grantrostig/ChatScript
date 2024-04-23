@@ -248,23 +248,23 @@ bool MarkWordHit(int depth, MEANING exactWord, WORDP D, int meaningIndex, unsign
 			*which = 0;
 			which[1] = 0;
 			if (exactWord && D->internalBits & UPPERCASE_HASH) which[0] = '^';
-			char* kindlabel = "";
+			char* kindlabel = const_cast<char*>("");
 			char other[MAX_WORD_SIZE];
 			*other = 0;
 			if (depth == 0 && *D->word != '~')
 			{
 				char lang[20];
 				char* status;
-				status = "";
-				 if (D->foreignFlags) status = "universal multilanguage";
-				else if (!GET_LANGUAGE_INDEX(D)) status = "universal all";
+				status = const_cast<char*>("");
+				 if (D->foreignFlags) status = const_cast<char*>("universal multilanguage");
+				else if (!GET_LANGUAGE_INDEX(D)) status = const_cast<char*>("universal all");
 				*lang = 0;
 				if (multidict) sprintf(lang, "%x", GET_LANGUAGE_INDEX(D));
 				sprintf(other, " (languagebits 0x%s %s):\r\n", lang, status);
 			}
-			if (kind == RAW || kind == RAWCASE) kindlabel = "(raw)";
+			if (kind == RAW || kind == RAWCASE) kindlabel = const_cast<char*>("(raw)");
 			Log((showMark) ? ECHOUSERLOG : USERLOG, (D->internalBits & TOPIC) ? "+T%s%s " : (char*)" +%s%s", D->word, which);
-			char* exactd = "";
+			char* exactd = const_cast<char*>("");
 			if (exactWord && D->word[0] == '~') exactd = Meaning2Word(exactWord)->word;
 			if (prefix) Log((showMark) ? ECHOUSERLOG : USERLOG, " (%d,%d-%d)\r\n", prefix,start, end);
 			else Log((showMark) ? ECHOUSERLOG : USERLOG," (%d-%d) %s %s %s\r\n", start, end,kindlabel,other,exactd);
@@ -575,7 +575,7 @@ unsigned int GetNextSpot(WORDP D, int start, bool reverse, unsigned int legalgap
 /* End of Word Reference in Sentence system */
 /**************************************/
 
-static void TraceHierarchy(FACT* F,char* msg)
+static void TraceHierarchy(FACT* F,char const* msg)
 {
     if (TraceHierarchyTest(trace))
     {
@@ -1051,7 +1051,7 @@ void MarkMeaningAndImplications(int depth, MEANING exactWord,MEANING M,int start
 	}
 }
 
-void HuntMatch(int kind, char* word,bool strict,int start, int end, unsigned int& usetrace, unsigned int restriction)
+void HuntMatch(int kind, char const* word,bool strict,int start, int end, unsigned int& usetrace, unsigned int restriction)
 {
 	WORDP D;
 	int oldtrace = trace;
@@ -1639,9 +1639,9 @@ static void MarkSentence(bool limitnlp)
 		{
 			char lang[20];
 			char* status;
-			status = "";
-			if (orig->foreignFlags) status = "universal multilanguage";
-			else if (GET_LANGUAGE_INDEX(orig)) status = "universal all";
+			status = const_cast<char*>("");
+			if (orig->foreignFlags) status = const_cast<char*>("universal multilanguage");
+			else if (GET_LANGUAGE_INDEX(orig)) status = const_cast<char*>("universal all");
 			*lang = 0;
 			if (multidict) sprintf(lang, "%x", GET_LANGUAGE_INDEX(orig));
 			Log(USERLOG, "%d: %s (languagebits 0x%s @x%s %s):\r\n", i, original, lang,PrintX64((uint64)orig), status);

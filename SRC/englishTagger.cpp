@@ -165,7 +165,7 @@ static char* tagOps [] =
 	(char*)"ISORIGINAL",(char*)"ISCANONICAL",(char*)"PRIORCANONICAL",(char*)"ISMEMBER",(char*)"PRIORORIGINAL",(char*)"POSTORIGINAL",
 	(char*)"POSITION",(char*)"RESETLOCATION",
 	(char*)"HAS2VERBS",(char*)"ISQWORD",(char*)"ISQUESTION",(char*)"ISABSTRACT",
-	(char*)"POSSIBLEINFINITIVE",(char*)"POSSIBLEADJECTIVE", "POSSIBLETOLESSVERB",// 23
+	(char*)"POSSIBLEINFINITIVE",(char*)"POSSIBLEADJECTIVE", const_cast<char*>("POSSIBLETOLESSVERB"),// 23
 	(char*)"POSSIBLEADJECTIVEPARTICIPLE",(char*)"HOWSTART",(char*)"POSSIBLEPHRASAL",(char*)"POSSIBLEPARTICLE",(char*)"ISCOMPARATIVE",(char*)"ISEXCLAIM",
 	(char*)"ISORIGINALMEMBER",(char*)"ISSUPERLATIVE",(char*)"SINGULAR",(char*)"ISPROBABLE",(char*)"PLURAL",(char*)"DUALNOUN",
 };
@@ -3259,12 +3259,12 @@ static void Tags(char* buffer, int i)
 char* DumpAnalysis(unsigned int start, unsigned int end,uint64 flags[MAX_SENTENCE_LENGTH],const char* label,bool original,bool roleDisplay)
 {
 	char* buffer = AllocateBuffer();
-	char* ambiguousx = "";
-	char* faultyparse = "";
+	char* ambiguousx = const_cast<char*>("");
+	char* faultyparse = const_cast<char*>("");
 	if (!original && tokenFlags & FAULTY_PARSE)
 	{
-		if (!stricmp(current_language, "ENGLISH")) 	faultyparse = "badparse "; // only one of ambiguous (worse) and faultyparse will be true
-		else faultyparse = "not-parsed ";
+		if (!stricmp(current_language, "ENGLISH")) 	faultyparse = const_cast<char*>("badparse "); // only one of ambiguous (worse) and faultyparse will be true
+		else faultyparse = const_cast<char*>("not-parsed ");
 	}
 	sprintf(buffer,(char*)"%s%s%s %u words: ",ambiguousx,faultyparse,label,end-start+1);
 	unsigned int lenpre;
@@ -10341,7 +10341,7 @@ needRoles[level] &= -1 ^ ALL_OBJECTS; // prior level is done
 			char* role = GetRole(roles[i]);
 			if (!*role) 
 			{
-				role = "";
+				role = const_cast<char*>("");
 				if (bitCounts[i] != 1) 
 				{
 					*word = 0; 

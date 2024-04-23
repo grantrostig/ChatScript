@@ -333,7 +333,7 @@ void myexit(const char* msg, int code)
 	exit((code == 0) ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-void mystart(char* msg)
+void mystart(char const* msg)
 {
 	char name[MAX_WORD_SIZE];
 	MakeDirectory(usersfolder);
@@ -628,7 +628,7 @@ char* Myfgets(char* buffer,  int size, FILE* in)
 		//return answer;
 }
 
-char* AllocateBuffer(char* name,char*content)
+char* AllocateBuffer(char const* name,char*content)
 {
 	if (!buffers) return (char*)""; // IDE before start
 
@@ -665,7 +665,7 @@ char* AllocateBuffer(char* name,char*content)
 	return buffer;
 }
 
-void FreeBuffer(char* name)
+void FreeBuffer(char const* name)
 { // if longjump happens this may not be called. manually restore counts in setjump code
 	if (showmem) Log(USERLOG,"%d Buffer free %s %d %s\r\n", globalDepth,name, bufferIndex, frameList[globalDepth]->name);
 	if (overflowIndex) --overflowIndex; // keep the dynamically allocated memory for now.
@@ -1261,14 +1261,14 @@ void EncryptRestart() // required
 	if (*decryptServer) userFileSystem.userDecrypt = Decrypt; // reestablish encrypt/decrypt bindings
 }
 
-size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file,bool decrypt,char* filekind)
+size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file,bool decrypt,char const* filekind)
 {
 	size_t len = userFileSystem.userRead(buffer,size,count,file);
 	if (userFileSystem.userDecrypt && decrypt) return userFileSystem.userDecrypt(buffer,1,len,file,filekind); // can revise buffer
 	return len;
 }
 
-size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file,bool encrypt,char* filekind)
+size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file,bool encrypt,char const* filekind)
 {
 	if (userFileSystem.userEncrypt && encrypt) 
 	{
@@ -1577,7 +1577,7 @@ int getdir (string dir, vector<string> &files)
 }
 #endif
 
-void WalkDirectory(char* directory,FILEWALK function, uint64 flags,bool recursive) 
+void WalkDirectory(char const* directory,FILEWALK function, uint64 flags,bool recursive) 
 {
 	char name[MAX_WORD_SIZE];
 	char fulldir[MAX_WORD_SIZE];
@@ -2625,7 +2625,7 @@ void Prelog(char* user, char* usee, char* incoming)
 	}
 }
 
-void LogChat(uint64 starttime, char* user, char* bot, char* IP, int turn, char* input, char* output, uint64 qtime)
+void LogChat(uint64 starttime, char const* user, char const* bot, char const* IP, int turn, char* input, char* output, uint64 qtime)
 {
 	if (!serverLog && !userLog) return;
 
